@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View,TouchableOpacity,Image,ImageBackground,TextInput,ScrollView,Dimensions } from 'react-native'
-import React,{useEffect} from 'react'
+import React,{useEffect,useState} from 'react'
 import Header from './Header'
 import Navbar from './Navbar'
 import {en,sw} from './Action/Store/Language'
@@ -16,29 +16,32 @@ const MyProfile = ({ navigation}) => {
 
 
 
-    console.log(My_Profile)
+    // console.log(My_Profile)
     const mynum = useSelector((state) => state.counter.value)
-    const dispatch = useDispatch()
     i18n.fallbacks=true;
     i18n.translations={en,sw};
     i18n.locale=mynum
 
-    
+
     useEffect( ()=>{
         getMultiple()
       
     
     })
-
+const [My_Profile, setMy_Profile] = useState([])
     const getMultiple = async () => {
 
-        let values
+        
         try {
-          values = await AsyncStorage.multiGet(["@name", "@email",'@gender','@mobile','@photo','@usertype'])
+        const  values = await AsyncStorage.multiGet(["@name", "@email",'@gender','@mobile','@photo','@usertype'])
+        setMy_Profile(values)
+        // console.log(values)
+      
         } catch(e) {
           console.log('errror')
         }
-        console.log(values)
+        // setMy_Profile(value)
+        // console.log(values)
       
         // example console.log output:
         // [ ['@MyApp_user', 'myUserValue'], ['@MyApp_key', 'myKeyValue'] ]
@@ -59,7 +62,7 @@ const MyProfile = ({ navigation}) => {
                 <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/formnamelogo.png')}/></View>
                 <View style={styles.inputTxtMain}>
                     <Text style={styles.inputHeading}>{i18n.t('Name')}</Text>
-                    <Text style={styles.input}>{My_Profile.name}</Text>
+                    <Text style={styles.input}>{My_Profile[0]}</Text>
                 </View>
             </View>
             
@@ -67,21 +70,21 @@ const MyProfile = ({ navigation}) => {
                 <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/gender_logo.png')}/></View>
                 <View style={styles.inputTxtMain}>
                     <Text style={styles.inputHeading}>{i18n.t('Gender')}</Text>
-                    <Text style={styles.input}>{My_Profile.gender}</Text>
+                    <Text style={styles.input}>{My_Profile[1]}</Text>
                 </View>
             </View>
             <View style={styles.inputMain}>
                 <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/mobile_logo.png')}/></View>
                 <View style={styles.inputTxtMain}>
                     <Text style={styles.inputHeading}>{i18n.t('Mobile')}</Text>
-                    <Text style={styles.input}>{My_Profile.mobile}</Text>
+                    <Text style={styles.input}>{My_Profile[2]}</Text>
                 </View>
             </View>
             <View style={styles.inputMain}>
                 <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/email_logo.png')}/></View>
                 <View style={styles.inputTxtMain}>
                     <Text style={styles.inputHeading}>{i18n.t('Email')}</Text>
-                    <Text style={styles.input}>{My_Profile.email}</Text>
+                    <Text style={styles.input}>{My_Profile[3]}</Text>
                 </View>
             </View>
             {/* <TouchableOpacity style={styles.submitBtn} onPress={()=>navigation.navigate('EditProfile')}>

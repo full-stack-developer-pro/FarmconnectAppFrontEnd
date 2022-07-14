@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity,Image,ImageBackground,ScrollView,Dimensions } from 'react-native'
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import FilterSwitch from './FilterSwitch';
 import Navbar from './Navbar';
@@ -9,16 +9,46 @@ import {en,sw} from './Action/Store/Language'
 import i18n from 'i18n-js'
 import { useSelector, useDispatch } from 'react-redux'
 import { English,Swahili } from './Action/Action'
-
+import { TRAINING_MODULE } from './store/actions/actionType';
+import { GetTrainingModuls } from './store/actions/Training';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const width = Dimensions.get('screen').width
 const height = Dimensions.get('screen').height
 const Trainig = ({ navigation}) => {
-
+// const my_module = useSelector((state)=>state.TrainingData[TRAINING_MODULE])
     const mynum = useSelector((state) => state.counter.value)
     const dispatch = useDispatch()
     i18n.fallbacks=true;
     i18n.translations={en,sw};
     i18n.locale=mynum
+
+    const[cdata,setCdata]=useState([])
+    useEffect(()=>{
+        getUserType()
+        // fetch('http://170.187.249.74:8080/member/training/all')
+        // .then(res=>res.json())
+        // .then(json=>{
+        //    setCdata(json.result)
+           
+        // })
+    },[])
+    console.log(cdata)
+
+    const getUserType = async () => {
+        try {
+          const value = await AsyncStorage.getItem('@usertype')
+          if(value !== null) {
+           console.log(value)
+          }
+          else{
+            console.log('first')
+          }
+        } catch(e) {
+         console.log('eror')
+        }
+      }
+    
+    
     // const Training = useSelector((state)=>state.mapingreducer)
     const [details, setdetails] = useState()
   const getIndex= key => event => {
@@ -85,6 +115,7 @@ detailsData:'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean co
 },
    
 ];
+
   return (
     <View style={styles.container}>
         <View style={styles.containerMain}>
@@ -93,13 +124,13 @@ detailsData:'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean co
     <ScrollView>
         <View style={{marginBottom:30}}>
         {
-             mapData.map((item,ind)=>{
+             cdata.map((item,ind)=>{
                 return(
                     <View key={ind} style={styles.AnnouncementMain}>
                         <View style={styles.ModuleMain}>
-                    <Text style={styles.Datea}>{`${item.date} ${ind+1}`}</Text></View>
-                        <Text style={styles.AnnouncementHeading}>{item.heading}</Text>
-                      <TouchableOpacity  style={styles.TrainigIconMain} onPress={getIndex(ind)} key={item.date}>
+                    <Text style={styles.Datea}>{`Module ${ind+1}`}</Text></View>
+                        <Text style={styles.AnnouncementHeading}>{item.title}</Text>
+                      <TouchableOpacity  style={styles.TrainigIconMain} onPress={getIndex(ind)} key={ind}>
                             <Image style={styles.TrainigIcon} source={require('../assets/training_icon.png')}/>
                         </TouchableOpacity>
                    
