@@ -17,11 +17,11 @@ const height = Dimensions.get('screen').height
 
 const Dashboard = ({navigation}) => {
 
-    useEffect( ()=>{
-        getMultiple()
+    // useEffect( ()=>{
+    //     getMultiple()
       
     
-    })
+    // },[])
     // const getData = async () => {
     //     try {
     //       const value = await AsyncStorage.getItem('@storage_Key')
@@ -37,19 +37,19 @@ const Dashboard = ({navigation}) => {
     //   }
 
        
-const getMultiple = async () => {
+// const getMultiple = async () => {
 
-    let values
-    try {
-      values = await AsyncStorage.multiGet(["@name", "@email",'@gender','@mobile','@photo','@usertype'])
-    } catch(e) {
-      console.log('errror')
-    }
-    console.log(values)
+//     let values
+//     try {
+//       values = await AsyncStorage.multiGet(["@name", "@email",'@gender','@mobile','@photo','@usertype'])
+//     } catch(e) {
+//       console.log('errror')
+//     }
+//     console.log(values)
   
-    // example console.log output:
-    // [ ['@MyApp_user', 'myUserValue'], ['@MyApp_key', 'myKeyValue'] ]
-  }
+//     // example console.log output:
+//     // [ ['@MyApp_user', 'myUserValue'], ['@MyApp_key', 'myKeyValue'] ]
+//   }
 
       
 
@@ -111,7 +111,7 @@ const getMultiple = async () => {
        
    
     ]
-    console.log(width)
+    
   return (
     
     <View style={styles.container}>

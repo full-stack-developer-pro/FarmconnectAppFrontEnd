@@ -43,8 +43,8 @@ const Login = ({navigation}) => {
     const [gender, setgender] = useState('')
    
     const [mobile, setmobile] = useState('')
-    const [email, setemail] = useState('')
-    const [password, setpassword] = useState('')
+    const [email, setemail] = useState('arvindkumar19@gmail.com')
+    const [password, setpassword] = useState('1111')
     const [age, setage] = useState('')
     const [photo, setphoto] = useState('test1ff.jpg');
     const [usertype, setusertype] = useState('farmer')
@@ -130,11 +130,11 @@ const Login = ({navigation}) => {
             // GetProfileData()
            
 
-            navigation.navigate('Dashboard')
+            
            storeData()
         }
     
-    })
+    },)
     // const setProfileData=()=>{
     //     let user = test_store.user;
     //     setname(user.name)
@@ -161,6 +161,7 @@ const Login = ({navigation}) => {
 
     async function  getUser(){
         const user_id = await AsyncStorage.getItem("@MyApp_userId")
+        
        dispatch(GetUserProfileDetailsById(user_id))
        
        
@@ -186,7 +187,8 @@ const Login = ({navigation}) => {
                
              
               await AsyncStorage.multiSet([Name, email, Gender, Mobile, Photo, Usertype])
-              console.log('done')
+              navigation.navigate('Dashboard')
+            //   console.log('done')
             } catch(e){
               console.log('not stor')
             }

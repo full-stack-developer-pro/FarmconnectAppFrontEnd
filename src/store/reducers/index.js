@@ -7,6 +7,7 @@ import propertyReducer from './propertyReducer';
 import profileReducer from './profileReducer';
 import imageReducer from './imageLightBoxReducer';
 import updateProfileReducer from './UpdateProfile'
+import TrainingReducer from './TrainingReducer'
 
 
 // const rootReducer = combineReducers({
@@ -20,6 +21,7 @@ import updateProfileReducer from './UpdateProfile'
 
 const rootReducer = {
     auth: authReducer,
+    TrainingData:TrainingReducer,
     update:updateProfileReducer,
     Change:ChangePasswordReduser,
     forgotPass: forgotPassReducer,

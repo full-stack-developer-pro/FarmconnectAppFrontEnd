@@ -1,6 +1,6 @@
 
 import { StyleSheet, Text, View,TouchableOpacity,Image,ScrollView,Dimensions } from 'react-native'
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { AntDesign } from '@expo/vector-icons';
 
 import FilterSwitch from './FilterSwitch';
@@ -78,9 +78,19 @@ detailsData:'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean co
        
     ];
     const myIndex = route.params.key;
-  
+  const [datamodule, setdatamodule] = useState({})
    console.log(myIndex)
-     
+   const[cdata,setCdata]=useState([])
+   useEffect(()=>{
+       fetch('http://170.187.249.74:8080/member/training/all')
+       .then(res=>res.json())
+       .then(json=>{
+          setCdata(json.result[myIndex])
+        //   setdatamodule(cdata[myIndex])
+       })
+   },[0])
+   console.log(cdata.title)
+//    setdatamodule(cdata[myIndex])
   return (
     <View style={styles.container}>
         <View style={styles.containerMain}>
@@ -94,9 +104,9 @@ detailsData:'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean co
     <View>
          <View key={myIndex} style={styles.AnnouncementMain}>
          <View style={styles.ModuleMain}>
-                    <Text style={styles.Datea}>{`${mapData[myIndex].date}`}</Text></View>
-                        <Text style={styles.AnnouncementHeading}>{mapData[myIndex].heading}</Text>
-                        <ScrollView showsVerticalScrollIndicator={false}><Text style={styles.tariningDetails}>{mapData[myIndex].detailsData}</Text></ScrollView>
+                    <Text style={styles.Datea}>{`Modules ${myIndex+1}`}</Text></View>
+                        <Text style={styles.AnnouncementHeading}>{cdata.title}</Text>
+                        <ScrollView showsVerticalScrollIndicator={false}><Text style={styles.tariningDetails}>{cdata.description}</Text></ScrollView>
    
     
 </View>
