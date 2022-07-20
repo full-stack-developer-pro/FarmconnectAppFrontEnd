@@ -37,7 +37,7 @@ function getResponse(response) {
 //     return window.localStorage.getItem('token')
 // }
 
-export const axiosPost = (config, callback) => {
+export const axiosPostRL = (config, callback) => {
     const { url, reqBody, header } = config
     // const authorization = getToken();
     // if (!authorization && !config.skipAuth) {
@@ -45,7 +45,9 @@ export const axiosPost = (config, callback) => {
     //     // window.location.href = '/auth/login'
     //     return;
     // }
-    axios.post(url, reqBody, { headers: { ...header, }, baseURL: baseUrl })
+   
+    axios.post(url, reqBody, { headers: { ...header,}, baseURL: baseUrl })
+
         .then(response => {
             callback(getResponse(response))
         })
@@ -77,7 +79,7 @@ export const axiosDelete = (config, callback) => {
     //     // window.location.href = '/auth/login'
     //     return;
     // }
-    axios.delete(url, { headers: { ...header, }, baseURL: baseUrl })
+    axios.delete(url, { headers: { ...header,  }, baseURL: baseUrl })
         .then(response => {
             callback(getResponse(response))
         })
@@ -86,14 +88,14 @@ export const axiosDelete = (config, callback) => {
         })
 }
 
-export const axiosGet = (config, callback) => {
+export const axiosGetRL = (config, callback) => {
     const { header } = config
     // const authorization = getToken();
     // if (!authorization && !config.skipAuth) {
     //     // window.location.href = '/auth/login'
     //     return;
     // }
-    axios.get(config.url, { headers: { ...header, }, baseURL: baseUrl })
+    axios.get(config.url, { headers: { ...header,  }, baseURL: baseUrl })
         .then(response => {
             callback(getResponse(response))
         })

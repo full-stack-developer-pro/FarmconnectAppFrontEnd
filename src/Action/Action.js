@@ -7,11 +7,11 @@ export const counterSlice = createSlice({
   },
   reducers: {
     Swahili: (state) => {
-     
+
       state.value = 'sw'
     },
     English: (state) => {
-      state.value ='en'
+      state.value = 'en'
     },
     SwahiliByAmount: (state, action) => {
       state.value = 'en'

@@ -1,10 +1,11 @@
-import { axiosPost } from "../axiosHelper";
+
+import { axiosPostRL } from "../axiosHelperLogin";
 import { LOGIN } from "./actionType";
 import { Alert } from "react-native";
 
 export function LoginC(post) {
     return dispatch => {
-        return axiosPost({ url: "/login", reqBody: post, skipAuth: true }, (response) => {
+        return axiosPostRL({ url: "/login", reqBody: post, skipAuth: true }, (response) => {
             // if (response.data?.result?.token) window.localStorage.setItem('rtoken', response.data?.result?.token)
             // if (response.data?.result?._id) window.localStorage.setItem('ruserId', response.data?.result?._id)
             // if (response.data?.result?.token) window.localStorage.setItem('token', response.data?.result?.token)
@@ -15,14 +16,14 @@ export function LoginC(post) {
             });
             if (response.data?.success === true) {
                 Alert.alert(
-                                "HELLO!",
-                                "Password do not Match",
-                               
-                                [
-                                 
-                                  { text: "OK", onPress: () => console.log("OK Pressed") }
-                                ]
-                              );
+                    "HELLO!",
+                    "Password do not Match",
+
+                    [
+
+                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                );
                 // successNotification(response.data?.message);
                 // setTimeout(function(){
                 //     window.location.href = '/auth/verify-email'
@@ -81,7 +82,7 @@ export function VerifyOtp(post, setreset, setotp, reset) {
     };
 }
 
-export function forgotPasswordVerify(post,setuser,setreset) {
+export function forgotPasswordVerify(post, setuser, setreset) {
     return (dispatch) => {
         return axiosPost(
             { url: "/user/forgotPassword/verify", reqBody: post, skipAuth: true },

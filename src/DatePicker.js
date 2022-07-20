@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Button, View } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
- 
+
 export default class DateTimePickerTester extends Component {
   constructor(props) {
     super(props);
@@ -9,20 +9,20 @@ export default class DateTimePickerTester extends Component {
       isDateTimePickerVisible: false
     };
   }
- 
+
   showDateTimePicker = () => {
     this.setState({ isDateTimePickerVisible: true });
   };
- 
+
   hideDateTimePicker = () => {
     this.setState({ isDateTimePickerVisible: false });
   };
- 
+
   handleDatePicked = date => {
     console.log("A date has been picked: ", date);
     this.hideDateTimePicker();
   };
- 
+
   render() {
     return (
       <>

@@ -3,14 +3,14 @@ import { LOGIN, REGISTRATION, VERIFY_OTP } from "../actions/actionType"
 const initialState = {
     login_user_data: {},
     [REGISTRATION]: {},
-    [LOGIN]:{}
+    [LOGIN]: {}
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case LOGIN:
             return Object.assign({}, state, {
-                [LOGIN]:action[LOGIN]
+                [LOGIN]: action[LOGIN]
             })
 
         case REGISTRATION:

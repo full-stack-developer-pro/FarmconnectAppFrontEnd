@@ -30,13 +30,13 @@ export function GetUserProfileDetails() {
     return axiosGet({ url: `/user/profile/${user_id}`, skipAuth: true }, (response) => {
       if (response.status === 403) {
         // dispatch(stopLoading(AUTH_LOADING))
-        
+
         return dispatch({
           type: USER_PROFILE_DETAILS,
           [USER_PROFILE_DETAILS]: {},
         });
       }
-     
+
       // dispatch(GetUserProfileDetailsById(response.data._id));
       //
     });
@@ -98,7 +98,7 @@ export function ChangePassword(post) {
     return axiosPost(
       { url: "/user/change_password", reqBody: post },
       (response) => {
-       
+
         dispatch({
           type: USER_CHANGE_PASSWORD,
           [USER_CHANGE_PASSWORD]: response.data,
@@ -299,19 +299,19 @@ export function deactivateUser(userId, navigate) {
 
 export function addUserReview(post) {
   return dispatch => {
-      return axiosPost({ url: "/user/review/create", reqBody: post }, (response) => {
-          if (response.data?.success === true) {
-              // successNotification(response.data?.message);
-              dispatch(OtherProfileDetailsById(post?.user_id))
-          }
-          if (response.data?.success === false) {
-              errorNotification(response.data?.message)
-          }
-          dispatch({
-              type: ADD_USER_REVIEW,
-              [ADD_USER_REVIEW]: response.data
-          });
-      })
+    return axiosPost({ url: "/user/review/create", reqBody: post }, (response) => {
+      if (response.data?.success === true) {
+        // successNotification(response.data?.message);
+        dispatch(OtherProfileDetailsById(post?.user_id))
+      }
+      if (response.data?.success === false) {
+        errorNotification(response.data?.message)
+      }
+      dispatch({
+        type: ADD_USER_REVIEW,
+        [ADD_USER_REVIEW]: response.data
+      });
+    })
   };
 }
 

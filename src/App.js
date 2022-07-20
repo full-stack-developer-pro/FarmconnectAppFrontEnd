@@ -8,11 +8,11 @@ import Store from './Action/Store/Store'
 const App = () => {
   return (
     <Provider store={Store}>
-    <Appwraper/>
+      <Appwraper />
 
- </Provider>
-  
-   
+    </Provider>
+
+
   )
 }
 

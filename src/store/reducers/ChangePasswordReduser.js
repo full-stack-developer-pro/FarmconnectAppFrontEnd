@@ -1,9 +1,9 @@
-import { USER_CHANGE_PASSWORD} from "../actions/actionType"
+import { USER_CHANGE_PASSWORD } from "../actions/actionType"
 
 // import * as actionTypes from '../actions/actionType';
 const initialState = {
     [USER_CHANGE_PASSWORD]: [],
-    
+
 }
 
 const reducer = (state = initialState, action) => {
@@ -13,7 +13,7 @@ const reducer = (state = initialState, action) => {
             return Object.assign({}, state, {
                 [USER_CHANGE_PASSWORD]: action[USER_CHANGE_PASSWORD]
             })
-      
+
 
         default:
 

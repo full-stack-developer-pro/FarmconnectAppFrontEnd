@@ -65,7 +65,7 @@ export function ForgotPassReset(post) {
 }
 export function getEmailMobile(post) {
     return dispatch => {
-        return axiosPost({ url: "/fetchuserdata", reqBody: post, skipAuth: true }, (response) => {            
+        return axiosPost({ url: "/fetchuserdata", reqBody: post, skipAuth: true }, (response) => {
             // if (response.data?.success === true) {
             //     successNotification(response.data?.message);
             // }

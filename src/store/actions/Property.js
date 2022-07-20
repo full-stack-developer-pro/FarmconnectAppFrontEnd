@@ -77,7 +77,7 @@ export function GetListSearchedProperty() {
 export function GetPopertyByUserId(id) {
     return dispatch => {
         return axiosGet({ url: "/user/property/" + id, skipAuth: true }, (response) => {
-            console.log("+++++++++++++",response);
+            console.log("+++++++++++++", response);
             dispatch({
                 type: GET_PROPERTY_BY_USERID,
                 [GET_PROPERTY_BY_USERID]: response.data
@@ -133,7 +133,7 @@ export function GetPopertyBookingByUserId(userId) {
     };
 }
 
-export function CreatePropertyBooking(post,guest_count,navigate) {
+export function CreatePropertyBooking(post, guest_count, navigate) {
     return dispatch => {
         return axiosPost({ url: "/property/book", reqBody: post }, (response) => {
             if (response.data?.success === true) {

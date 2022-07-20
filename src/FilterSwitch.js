@@ -6,10 +6,10 @@ export default class FilterSwitch extends React.Component {
     super(props);
     this.state = {
       categes: [
-        { cat_id: '1', cat_name: props.all, backgroundcolor: '#2b478b',Fcolor:'#fff' },
-        { cat_id: '2', cat_name: props.allu, backgroundcolor: '#fff',Fcolor:'#7c7c7c' },
-        { cat_id: '3', cat_name: props.allm, backgroundcolor: '#fff' ,Fcolor:'#7c7c7c'},
-       
+        { cat_id: '1', cat_name: props.all, backgroundcolor: '#2b478b', Fcolor: '#fff' },
+        { cat_id: '2', cat_name: props.allu, backgroundcolor: '#fff', Fcolor: '#7c7c7c' },
+        { cat_id: '3', cat_name: props.allm, backgroundcolor: '#fff', Fcolor: '#7c7c7c' },
+
       ],
       change: false,
     };
@@ -41,18 +41,18 @@ export default class FilterSwitch extends React.Component {
     return (
       <View style={styles.switchMain}>
         {this.state.categes.map((item, key) => (
-          <TouchableOpacity 
-          key={key}
+          <TouchableOpacity
+            key={key}
             style={{
-                width:'33%',
-                height:39,
-                justifyContent:'center',
-                alignItems:'center',
-                borderRadius:50,
+              width: '33%',
+              height: 39,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderRadius: 50,
               backgroundColor: item.backgroundcolor,
             }}
             onPress={() => this.changeBackground(item)}>
-            <Text style={{ color: item.Fcolor,fontWeight:'500',fontSize:16,textAlign:'center' }}>
+            <Text style={{ color: item.Fcolor, fontWeight: '500', fontSize: 16, textAlign: 'center' }}>
               {' '}
               {item.cat_name}
             </Text>
@@ -64,25 +64,25 @@ export default class FilterSwitch extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    switchMain:{
-        width:'90%',
-        height:40,
-        justifyContent:'space-evenly',
-        alignItems:'center',
-        backgroundColor:'#fff',
-        borderRadius:50,
-        flexDirection:'row',
-        alignSelf:'center',
-        marginVertical:10
-     
+  switchMain: {
+    width: '90%',
+    height: 40,
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 50,
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginVertical: 10
 
-    },
-    allItem:{
-        widt:'33%',
-        height:39,
-        justifyContent:'center',
-        alignItems:'center',
-        borderRadius:50
-        
-    }
+
+  },
+  allItem: {
+    widt: '33%',
+    height: 39,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 50
+
+  }
 });
