@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Dimensions } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import FilterSwitch from './FilterSwitch'
 import Navbar from './Navbar'
 import { AntDesign } from '@expo/vector-icons';
@@ -10,7 +10,7 @@ import { en, sw } from './Action/Store/Language'
 import i18n from 'i18n-js'
 import { useSelector, useDispatch } from 'react-redux'
 import { English, Swahili } from './Action/Action'
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const width = Dimensions.get('screen').width
 const height = Dimensions.get('screen').height
 const Quastion = ({ navigation }) => {
@@ -26,18 +26,9 @@ const Quastion = ({ navigation }) => {
     const [page, setpage] = useState(Test.slice(num, num + 2))
     const [radioButtons, setRadioButtons] = useState()
 
-    const submitDone = () => {
-        if (num < Test.length) {
-            setnum(num + 2)
-        } else {
-            setpopup(!popup)
-        }
-    }
 
-    function onPressRadioButton(radioButtonsArray) {
-        setRadioButtons(radioButtonsArray.radioButtons)
 
-    }
+
     const radioButtonsData = [{
         id: '1', // acts as primary key, should be unique and non-empty string
         label: 'Option 1',
@@ -48,12 +39,180 @@ const Quastion = ({ navigation }) => {
         value: 'option2'
     }]
 
+    const [cdata, setCdata] = useState([])
+    useEffect(() => {
+        getUserType()
+
+    }, [])
+    console.log(cdata)
+    const getUserType = async () => {
+        const Mytoken = await AsyncStorage.getItem('@MyApp_Token')
+        const TrainingId = await AsyncStorage.getItem('@Training_Id')
+        try {
+            const value = await AsyncStorage.getItem('@usertype')
+            if (value === 'farmer' && TrainingId !== null) {
+                fetch(`http://170.187.249.74:8080/member/training/test/${TrainingId}`, {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": Mytoken,
+                    }
+                })
+                    .then(res => res.json())
+                    .then(json => {
+                        setCdata(json.result)
+                        console.log(json)
+                    })
+            }
+            else if (value === 'cooperative') {
+                fetch(`http://170.187.249.74:8080/member/training/test/${TrainingId}`, {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": Mytoken,
+                    }
+                })
+                    .then(res => res.json())
+                    .then(json => {
+                        setCdata(json.result)
+                        console.log('cooprative')
+
+                    })
+            }
+            else {
+                console.log('first')
+            }
+        } catch (e) {
+            console.log('eror')
+        }
+    }
+
 
     const cutPopup = () => {
         setpopup(!popup)
         navigation.navigate('Trainig')
     }
-    console.log(radioButtons)
+    const [group, setgroup] = useState()
+    const [firstAnsId, setfirstAnsId] = useState()
+    const [secondAnsId, setsecondAnsId] = useState()
+    const [firstQuestionId, setfirstQuestionId] = useState()
+    const [secondQuestionId, setsecondQuestionId] = useState()
+    const [Training_Id, setTraining_Id] = useState()
+    const [id, setid] = useState()
+   
+
+
+    const [firstColor, setfirstColor] = useState(null)
+    const [secondColor, setsecondColor] = useState(null)
+    const [thirdColor, setthirdColor] = useState(null)
+    const [colorAll, setcolorAll] = useState({
+        val: [
+            { btn_id: 0, clr: firstColor },
+            { btn_id: 1, clr: firstColor },
+            { btn_id: 2, clr: firstColor },
+            { btn_id: 3, clr: firstColor },
+
+        ]
+    })
+    const [colorAllsecond, setcolorAllsecond] = useState({
+        val: [
+            { btn_id: 0, clr: firstColor },
+            { btn_id: 1, clr: firstColor },
+            { btn_id: 2, clr: firstColor },
+            { btn_id: 3, clr: firstColor },
+
+        ]
+    })
+    const selectedAns = key => eve => {
+        let categes = JSON.parse(JSON.stringify(colorAll.val))
+        let index = key
+        for (let x = 0; x < colorAll.val.length; x++) {
+            if (colorAll.val[x].btn_id == index) {
+                categes[x].clr = '#2b478b'
+                // setcolorAll({val:categes})
+                console.log(categes)
+            } else if (colorAll.val[x].btn_id !== index) {
+                categes[x].clr = firstColor
+                setcolorAll({ val: categes })
+            }
+        }
+        let anId = cdata[0].answer_list[index]._id
+        setfirstAnsId(anId)
+        let QId = cdata[0].answer_list[index].question_id
+        setfirstQuestionId(QId)
+        let TrainindId = cdata[0].answer_list[index].training_id
+        setTraining_Id(TrainindId)
+    }
+    const selectedAnssecond = key => eve => {
+        let categes = JSON.parse(JSON.stringify(colorAllsecond.val))
+        let index = key
+        for (let x = 0; x < colorAllsecond.val.length; x++) {
+            if (colorAllsecond.val[x].btn_id == index) {
+                categes[x].clr = '#2b478b'
+                // setcolorAllsecond({val:categes})
+                console.log(categes)
+            } else if (colorAllsecond.val[x].btn_id !== index) {
+                categes[x].clr = firstColor
+                setcolorAllsecond({ val: categes })
+            }
+        }
+        let anId = cdata[1].answer_list[index]._id
+        setsecondAnsId(anId)
+        let QId = cdata[1].answer_list[index].question_id
+        setsecondQuestionId(QId)
+        let TrainindId = cdata[0].answer_list[index].training_id
+        setTraining_Id(TrainindId)
+    }
+    const submitDone = async () => {
+        const user_id = await AsyncStorage.getItem("@MyApp_userId")
+        const Mytoken = await AsyncStorage.getItem('@MyApp_Token')
+        const TrainingId = await AsyncStorage.getItem('@Training_Id')
+        try {
+            if(Training_Id!==null && user_id !==null){
+            let items = { trainind_id:Training_Id, user_id:user_id,testsubmit:[{question_id:firstQuestionId,answer_id:firstAnsId},{question_id:secondQuestionId,answer_id:secondAnsId}]}
+
+            fetch(`http://170.187.249.74:8080/member/training/test/submit`, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": Mytoken,
+                    },
+                    body:JSON.stringify(items)
+                })
+                    .then(res => res.json())
+                    .then(json => {
+                        // setCdata(json.result)
+                        console.log(json)
+                    })
+                  
+                }
+                setTimeout(() => {
+                    fetch(`http://170.187.249.74:8080/member/training/test/result/${Training_Id}/${user_id}`, {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": Mytoken,
+                    }
+                })
+                    .then(res => res.json())
+                    .then(json => {
+                        // setCdata(json.result)
+                        console.log(json)
+
+                    })
+                }, 1000);
+                
+           
+        } catch (e) {
+            console.log('eror')
+        }
+    }
+
+    // console.log(radioButtons)
     return (
         <View style={styles.container}>
             <View style={styles.containerMain}>
@@ -66,42 +225,62 @@ const Quastion = ({ navigation }) => {
                             <View style={styles.ModuleMain}>
                                 <Text style={styles.Module}>Module 1</Text></View>
                             <Text style={styles.QuastionNumHeading}>{`${i18n.t('Question')} ${num + 1} ${i18n.t('to')} ${num + 2}`}</Text>
-                            {
-                                page.map((item, ind) => {
-                                    return (
-                                        <View key={ind} style={styles.QuastionSheetMain}>
+
+                            <View style={styles.QuastionSheetMain}>
 
 
-                                            <Text style={styles.QuastionHeading}>{`${num + 1 + ind}. ${item.quastion}`}</Text>
-                                            <View style={styles.AnsMain}>
-                                                <RadioGroup
-                                                    radioButtons={[{
-                                                        id: '1', // acts as primary key, should be unique and non-empty string
-                                                        label: item.option_1,
-                                                        value: item.option_1
-                                                    }, {
-                                                        id: '2',
-                                                        label: item.option_2,
-                                                        value: item.option_2
-                                                    },
-                                                    {
-                                                        id: '3', // acts as primary key, should be unique and non-empty string
-                                                        label: item.option_3,
-                                                        value: item.option_3
-                                                    }, {
-                                                        id: '4',
-                                                        label: item.option_4,
-                                                        value: item.option_4
-                                                    },]}
+                                <Text style={styles.QuastionHeading}>{`${num + 1}. ${cdata[0]?.question}`}</Text>
+                                <View style={styles.AnsMain}>
 
-                                                    onPress={onPressRadioButton}
-                                                />
+                                    <View style={styles.opsMain}>
+                                        <View>
+                                            {
+                                                colorAll.val.map((citem, cind) => {
+                                                    return (
+                                                        <TouchableOpacity style={[styles.RadioMain, { backgroundColor: citem.clr }]} key={cind} onPress={selectedAns(cind)}>
 
-                                            </View>
+                                                        </TouchableOpacity>
+                                                    )
+                                                })
+                                            }
                                         </View>
-                                    )
-                                })
-                            }
+                                        <View>
+                                            {cdata[0]?.answer_list.map((itm, ind) => {
+                                                return (<Text key={ind} style={styles.AnsTxt}>{itm.answer}</Text>)
+                                            })}
+                                        </View>
+                                    </View>
+
+                                </View>
+                            </View>
+                            <View style={styles.QuastionSheetMain}>
+
+
+                                <Text style={styles.QuastionHeading}>{`${num + 2}. ${cdata[1]?.question}`}</Text>
+                                <View style={styles.AnsMain}>
+
+                                    <View style={styles.opsMain}>
+                                        <View>
+                                            {
+                                                colorAllsecond.val.map((citem, cind) => {
+                                                    return (
+                                                        <TouchableOpacity style={[styles.RadioMain, { backgroundColor: citem.clr }]} key={cind} onPress={selectedAnssecond(cind)}>
+
+                                                        </TouchableOpacity>
+                                                    )
+                                                })
+                                            }
+                                        </View>
+                                        <View>
+                                            {cdata[1]?.answer_list.map((itm, ind) => {
+                                                return (<Text key={ind} style={styles.AnsTxt}>{itm.answer}</Text>)
+                                            })}
+                                        </View>
+                                    </View>
+
+                                </View>
+                            </View>
+
                             <TouchableOpacity style={styles.submitAns} onPress={submitDone}><Text style={styles.submitTxt}>{i18n.t('Submit')}</Text></TouchableOpacity>
                         </View>
                     </View>
@@ -301,5 +480,29 @@ const styles = StyleSheet.create({
     passFail: {
         fontSize: 32,
         color: '#fcb45f'
+    },
+    opsMain: {
+        flexDirection: 'row',
+        // justifyContent: 'center',
+        alignItems: 'center',
+        width: '90%'
+    },
+    RadioMain: {
+        width: 20,
+        height: 20,
+        marginHorizontal:20,
+        marginVertical:5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderColor: 'black',
+        borderWidth: 1
+    },
+    RadioInner: {
+        height: 15,
+        width: 15
+    },
+    AnsTxt:{
+        // marginHorizontal:20,
+        marginVertical:5,
     }
 })

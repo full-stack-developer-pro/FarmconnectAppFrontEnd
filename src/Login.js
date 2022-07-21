@@ -74,9 +74,9 @@ const Login = ({ navigation }) => {
     // }
 
     const LoginMobileNumberChange = (Value) => {
-        setMobile(Value)
-        let num = Mobile
         setmobile(Value)
+        // let num = Mobile
+        // setmobile(Value)
 
     }
     const LoginPsswordChange = (Value) => {
@@ -92,33 +92,49 @@ const Login = ({ navigation }) => {
 
     const LoginBtn = () => {
         let items = { mobile, password}
-        console.log(items)
-        dispatch(LoginC(items))
-     
-        setTimeout(() => {
-           
+        fetch('http://170.187.249.74:8080/login',{
+        method:'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
             
-            // getUser()
-            getUserType()
-        }, 2000);
+        },
+        body:JSON.stringify(items)
+    })
+        .then(res => res.json())
+        .then(json => {
+            setLoginData(json)
+            console.log(LoginData)
+           
+        })
 
 
 
 
     }
-    
+    useEffect(()=>{
+        if(LoginData !== null){
+            if(LoginData.status === true){
+            storeData()
+            storeprofileData()
+            getUserType()
+       }
+        }
+    })
+    const [LoginData, setLoginData] = useState(null)
     // const GetProfileData = ()=>{
     //     let items = {name,member_number,gender,mobile,email,password,age,photo,usertype}
     //     console.log(items)
 
     // }
-    let token = test_store.accesstoken
+    
 
     const [Tokenstate, setTokenstate] = useState()
 
 
     const storeData = async () => {
-        let userId = test_store.user._id
+        let token = LoginData.accesstoken
+        let userId = LoginData.user._id
         const UserId = userId
 
         const jsonValue = token
@@ -136,17 +152,16 @@ const Login = ({ navigation }) => {
             console.log('not stor')
         }
     }
-    useEffect(() => {
+    // useEffect(() => {
 
-        if (test_store.status === true) {
-            // setProfileData()
-            // GetProfileData()
-            storeData()
-            storeprofileData()
-            console.log(test_store)
-        }
+    //     if (test_store.status === true) {
+    //         // setProfileData()
+    //         // GetProfileData()
+           
+    //         console.log(test_store)
+    //     }
 
-    })
+    // })
     // const setProfileData=()=>{
     //     let user = test_store.user;
     //     setname(user.name)
@@ -165,14 +180,14 @@ const Login = ({ navigation }) => {
         return 2 + 2;
     }, []);
 
-    useEffect(() => {
+    // useEffect(() => {
         
-        // getData()
-        // getProfile()
+    //     // getData()
+    //     // getProfile()
         
       
 
-    },[logResult])
+    // },[logResult])
 
     const [Id, setId] = useState('')
     const [AppToken, setAppToken] = useState('')
@@ -208,7 +223,7 @@ const Login = ({ navigation }) => {
 
 
             await AsyncStorage.multiSet([Name, email, Gender, Mobile, Photo, Usertype])
-            navigation.navigate('Dashboard')
+           
             //   console.log('done')
         } catch (e) {
             console.log('not stor')
@@ -235,6 +250,12 @@ const Login = ({ navigation }) => {
                     .then(res => res.json())
                     .then(json => {
                         setProfileData(json.result)
+                        if(json.result!==null){
+                            navigation.navigate('Dashboard')
+                            setmobile('')
+                            setpassword('')
+                            setLoginData(null)
+                        }
                         console.log(json)
                     })
             
@@ -282,7 +303,7 @@ const resetBtn = async()=>{
                         <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/mobile_logo.png')} /></View>
                         <View style={styles.inputTxtMain}>
                             <Text style={styles.inputHeading}>{i18n.t('Mobile')}</Text>
-                            <TextInput style={styles.input} value={Mobile} onChangeText={LoginMobileNumberChange} placeholder='Enter contact details' />
+                            <TextInput style={styles.input} value={mobile} onChangeText={LoginMobileNumberChange} placeholder='Enter contact details' />
                         </View>
                     </View>
                     {/* {firstLogin &&  <View style={styles.inputMain}>

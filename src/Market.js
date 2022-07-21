@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput, ImageBackground, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput, ImageBackground, Dimensions,Alert } from 'react-native'
 import React, { useState,useEffect } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import Navbar from './Navbar';
@@ -111,6 +111,20 @@ const AllProduct = async()=>{
         .then(json => {
            
             console.log(json)
+            if(json.status===true){
+                Alert.alert(
+                                "HELLO!",
+                                "Commodity Market in Product Add Successfully",
+                
+                                [
+                
+                                  { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                              );
+                              setTitle('')
+                              setDiscription('')
+                              setPrice('')
+            }
         })
 
     }

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, TextInput, Dimensions, FlatList } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, TextInput, Dimensions, FlatList ,Alert} from 'react-native'
 import React, { useState, useEffect, useCallback } from 'react'
 import Navbar from './Navbar'
 import { AntDesign } from '@expo/vector-icons';
@@ -46,6 +46,18 @@ const [Data, setData] = useState([])
         .then(json => {
            
             console.log(json)
+            if(json.status===true){
+                Alert.alert(
+                                "HELLO!",
+                                "Query Send successfully",
+                
+                                [
+                
+                                  { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                              );
+                              setquestion('')
+            }
         })
 
     }

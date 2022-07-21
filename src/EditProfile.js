@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, TextInput, ScrollView, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ImageBackground, TextInput, ScrollView, Dimensions,Alert } from 'react-native'
 import React, { useState, useEffect, useCallback } from 'react'
 import Header from './Header'
 import Navbar from './Navbar'
@@ -38,9 +38,9 @@ const EditProfile = ({ navigation }) => {
     }
     const MobileChange = (Value) => {
 
-        setMobile(Value)
-        let num = parseInt(Mobile)
-        setmobile(num)
+        setmobile(Value)
+        // let num = parseInt(Mobile)
+        // setmobile(num)
 
     }
     const EmailChange = (Value) => {
@@ -48,9 +48,9 @@ const EditProfile = ({ navigation }) => {
 
     }
     const AgeChange = (Value) => {
-        setAge(Value)
-        let num = parseInt(Age)
-        setage(num)
+        setage(Value)
+        // let num = parseInt(Age)
+        // setage(num)
 
     }
 
@@ -69,7 +69,23 @@ const EditProfile = ({ navigation }) => {
         .then(res => res.json())
         .then(json => {
            
-            console.log(json)
+            console.log(json) 
+            if(json.status===true){
+                Alert.alert(
+                                "HELLO!",
+                                "Profile Updated successfully",
+                
+                                [
+                
+                                  { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                              );
+                              setname('')
+                              setgender('')
+                              setmobile('')
+                              setage('')
+                              setemail('')
+            }
         })
     }
     const logResult = useCallback(() => {
@@ -92,8 +108,8 @@ const EditProfile = ({ navigation }) => {
         <View style={styles.container}>
             <View style={styles.containerMain}>
                 <Header Heading={i18n.t('Profile')} goBackBtn={() => navigation.goBack()} Notification={() => navigation.navigate('Notification')} />
-                <ScrollView>
-                    <View style={{ marginBottom: 20 }}>
+                <ScrollView style={{marginBottom:50}}>
+                    
                         <View style={styles.profilePicMain}>
                             <TouchableOpacity style={styles.profilePic}>
                                 <Image style={styles.profileImg} source={require('../assets/profile_picture.png')} />
@@ -128,14 +144,14 @@ const EditProfile = ({ navigation }) => {
                             <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/mobile_logo.png')} /></View>
                             <View style={styles.inputTxtMain}>
                                 <Text style={styles.inputHeading}>Mobile</Text>
-                                <TextInput style={styles.input} numeric keyboardType={'numeric'} value={Mobile} onChangeText={MobileChange} placeholder='Enter contact details' />
+                                <TextInput style={styles.input} numeric keyboardType={'numeric'} value={mobile} onChangeText={MobileChange} placeholder='Enter contact details' />
                             </View>
                         </View>
                         <View style={styles.inputMain}>
                             <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/age_logo.png')} /></View>
                             <View style={styles.inputTxtMain}>
                                 <Text style={styles.inputHeading}>Age(Optional)</Text>
-                                <TextInput style={styles.input} numeric keyboardType={'numeric'} value={Age} onChangeText={AgeChange} placeholder='Enter age here' />
+                                <TextInput style={styles.input} numeric keyboardType={'numeric'} value={age} onChangeText={AgeChange} placeholder='Enter age here' />
                             </View>
                         </View>
                         <View style={styles.inputMain}>
@@ -148,12 +164,10 @@ const EditProfile = ({ navigation }) => {
                         <TouchableOpacity style={styles.submitBtn} onPress={editProfile}>
                             <Text style={styles.submitTxt} >{i18n.t('Change')}</Text>
                         </TouchableOpacity>
-                    </View>
+                    <View style={{height:130}}></View>
                 </ScrollView>
             </View>
-            <View style={styles.navbarPosition}>
-                <Navbar Profile={() => navigation.navigate('MyProfile')} Quastion={() => navigation.navigate('Agronomist')} Home={() => navigation.navigate('Dashboard')} Weather={() => navigation.navigate('Weather')} Menu={() => navigation.navigate('Settings')} />
-            </View>
+            <Navbar Profile={() => navigation.navigate('MyProfile')} Quastion={() => navigation.navigate('Agronomist')} Home={() => navigation.navigate('Dashboard')} Weather={() => navigation.navigate('Weather')} Menu={() => navigation.navigate('Settings')} />
 
         </View>
     )
@@ -237,11 +251,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    navbarPosition: {
-        width: '100%',
-        bottom: 0,
-        position: 'absolute'
-    }, submitBtn: {
+    // navbarPosition: {
+    //     width: '100%',
+    //     bottom: 0,
+    //     position: 'absolute'
+    // }, 
+    submitBtn: {
         width: '90%',
         justifyContent: 'center',
         height: 48,

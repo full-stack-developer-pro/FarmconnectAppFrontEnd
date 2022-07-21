@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput, ImageBackground, FlatList } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput, ImageBackground, FlatList,Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { en, sw } from './Action/Store/Language'
-import i18n from 'i18n-js'
+import i18n, { nullPlaceholder } from 'i18n-js'
 import { useSelector, useDispatch } from 'react-redux'
 import { English, Swahili } from './Action/Action'
 import { registration } from './store/actions/registration';
@@ -47,9 +47,9 @@ const CooperativeSignup = ({ navigation }) => {
 
     const MemberChange = (Value) => {
 
-        setMember_number(Value)
-        let num = parseInt(Member_number)
-        setmember_number(num)
+        setmember_number(Value)
+        // let num = parseInt(Member_number)
+        // setmember_number(num)
 
     }
     const GenderChange = (Value) => {
@@ -59,9 +59,9 @@ const CooperativeSignup = ({ navigation }) => {
 
     const MobileChange = (Value) => {
 
-        setMobile(Value)
-        let num = parseInt(Mobile)
-        setmobile(num)
+        setmobile(Value)
+        // let num = parseInt(Mobile)
+        // setmobile(num)
 
     }
     const EmailChange = (Value) => {
@@ -77,39 +77,73 @@ const CooperativeSignup = ({ navigation }) => {
 
     }
     const AgeChange = (Value) => {
-        setAge(Value)
-        let num = parseInt(Age)
-        setage(num)
+        setage(Value)
+        // let num = parseInt(Age)
+        // setage(num)
 
     }
     const FirmSizeChange = (Value) => {
-        setSize_of_farm(Value)
-        let num = parseInt(Size_of_farm)
-        setsize_of_farm(num)
+        setsize_of_farm(Value)
+        // let num = parseInt(Size_of_farm)
+        // setsize_of_farm(num)
 
     }
     const NumberOfTreeChange = (Value) => {
-        setNumber_of_trees(Value)
-        let num = parseInt(Number_of_trees)
-        setnumber_of_trees(num)
+        setnumber_of_trees(Value)
+        // let num = parseInt(Number_of_trees)
+        // setnumber_of_trees(num)
 
     }
     const HistoricalProductionChange = (Value) => {
-        setHistorical_production(Value)
-        let num = parseInt(Historical_production)
-        sethistorical_production(num)
+        sethistorical_production(Value)
+        // let num = parseInt(Historical_production)
+        // sethistorical_production(num)
 
     }
     const [first, setfirst] = useState([])
+const [compenyId, setcompenyId] = useState('')
 
 
 
-    const SubmitForm = () => {
-        let items = { name, member_number, gender, mobile, email, password, registered_cooperative, age, size_of_farm, number_of_trees, historical_production, photo, usertype }
+let items = {company_id:compenyId, name, member_number, gender, mobile, email, password, registered_cooperative, age, size_of_farm, number_of_trees, historical_production, photo, usertype }
 
-        dispatch(registration(items))
-        console.log(items)
-        console.log(test_store)
+    const SubmitForm = async() => {
+        fetch('http://170.187.249.74:8080/register',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                
+            },
+            body:JSON.stringify(items)
+        })
+            .then(res => res.json())
+            .then(json => {
+                console.log(json)
+                if(json.status===true){
+                    Alert.alert(
+                        "HELLO!",
+                        "Registration Done Successfully",
+        
+                        [
+        
+                          { text: "OK", onPress: () => console.log("OK Pressed") }
+                        ]
+                      );
+                      navigation.navigate('Login')
+                }else{
+                    Alert.alert(
+                        "HELLO!",
+                        `${json.message}`,
+        
+                        [
+        
+                          { text: "OK", onPress: () => console.log("OK Pressed") }
+                        ]
+                      );
+                }
+               
+            })
     }
 
     //    console.log(itemorderd)
@@ -130,13 +164,16 @@ const CooperativeSignup = ({ navigation }) => {
     };
 
     const test_store = useSelector((state) => state.auth[REGISTRATION])
-    useEffect(() => {
-        if (test_store.status === true) {
+    // useEffect(() => {
+    //     if (test_store.status === true) {
 
-            navigation.navigate('Login')
-        }
-getCompny()
-    },[])
+    //         navigation.navigate('Login')
+    //     }
+
+    // })
+    useEffect(()=>{
+        getCompny()
+    }, [])
     const getCompny=()=>{
         fetch('http://170.187.249.74:8080/admin/all/company')
         .then(res => res.json())
@@ -177,7 +214,7 @@ getCompny()
                         <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/number_logo.png')} /></View>
                         <View style={styles.inputTxtMain}>
                             <Text style={styles.inputHeading}>Member Number</Text>
-                            <TextInput style={styles.input} numeric keyboardType={'numeric'} value={Member_number} onChangeText={MemberChange} placeholder='Enter Member here' />
+                            <TextInput style={styles.input} numeric keyboardType={'numeric'} value={member_number} onChangeText={MemberChange} placeholder='Enter Member here' />
                         </View>
                     </View>
                     <View style={styles.inputMain}>
@@ -202,7 +239,7 @@ getCompny()
                         <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/mobile_logo.png')} /></View>
                         <View style={styles.inputTxtMain}>
                             <Text style={styles.inputHeading}>Mobile</Text>
-                            <TextInput style={styles.input} numeric keyboardType={'numeric'} value={Mobile} onChangeText={MobileChange} placeholder='Enter contact details' />
+                            <TextInput style={styles.input} numeric keyboardType={'numeric'} value={mobile} onChangeText={MobileChange} placeholder='Enter contact details' />
                         </View>
                     </View>
                     <View style={styles.inputMain}>
@@ -233,59 +270,58 @@ getCompny()
                                     <Picker.Item label="No" value={false} />
                                 </Picker>
                             </View>}
-                          
+                          {registered_cooperative &&  <View style={{ top: 0, zIndex: 1, height: 40 }}>
+                                <Picker
+                                    selectedValue={compenyId}
+                                    onValueChange={(itemValue, itemIndex) =>
+                                        setcompenyId(itemValue)
+                                    }>
+                                        {
+                                            compeny.map((item,ind)=>{
+                                                return(
+                                                    <Picker.Item key={ind} label={item.company_name} value={item.id} />
+                                                )
+                                            })
+                                        }
+                                    {/* <Picker.Item label="ss" value={true} />
+                                    <Picker.Item label="sdsd" value={false} /> */}
+                                </Picker>
+                            </View>}
                         </View>
 
                     </View>
-                    
                     <View style={styles.inputMain}>
                         <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/age_logo.png')} /></View>
                         <View style={styles.inputTxtMain}>
                             <Text style={styles.inputHeading}>Age(Optional)</Text>
-                            <TextInput style={styles.input} numeric keyboardType={'numeric'} value={Age} onChangeText={AgeChange} placeholder='Enter age here' />
+                            <TextInput style={styles.input} numeric keyboardType={'numeric'} value={age} onChangeText={AgeChange} placeholder='Enter age here' />
                         </View>
                     </View>
                     <View style={styles.inputMain}>
                         <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/size_logo.png')} /></View>
                         <View style={styles.inputTxtMain}>
                             <Text style={styles.inputHeading}>Size of Firm(Optional)</Text>
-                            <TextInput style={styles.input} numeric keyboardType={'numeric'} value={Size_of_farm} onChangeText={FirmSizeChange} placeholder='123' />
+                            <TextInput style={styles.input} numeric keyboardType={'numeric'} value={size_of_farm} onChangeText={FirmSizeChange} placeholder='123' />
                         </View>
                     </View>
                     <View style={styles.inputMain}>
                         <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/tree_logo.png')} /></View>
                         <View style={styles.inputTxtMain}>
                             <Text style={styles.inputHeading}>Number of Trees Coffee only(optional)</Text>
-                            <TextInput style={styles.input} numeric keyboardType={'numeric'} value={Number_of_trees} onChangeText={NumberOfTreeChange} placeholder='24' />
+                            <TextInput style={styles.input} numeric keyboardType={'numeric'} value={number_of_trees} onChangeText={NumberOfTreeChange} placeholder='24' />
                         </View>
                     </View>
                     <View style={styles.inputMain}>
                         <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/historical_logo.png')} /></View>
                         <View style={styles.inputTxtMain}>
                             <Text style={styles.inputHeading}>Historical Production (Optional)</Text>
-                            <TextInput style={styles.input} numeric keyboardType={'numeric'} value={Historical_production} onChangeText={HistoricalProductionChange} placeholder='24' />
+                            <TextInput style={styles.input} numeric keyboardType={'numeric'} value={historical_production} onChangeText={HistoricalProductionChange} placeholder='24' />
                         </View>
                     </View>
 
                     <TouchableOpacity style={styles.submitBtn} onPress={SubmitForm}>
                         <Text style={styles.submitTxt}>{i18n.t('Sign_up')}</Text>
                     </TouchableOpacity>
-                    
-        {registered_cooperative &&
-        <TouchableOpacity style={styles.selectlanguageContainer} >
-          <View style={styles.languageGroup}>
-            {
-                compeny.map((item,ind)=>{
-<TouchableOpacity style={styles.englishLanguageBtn} >
-              <Text style={styles.languageTxt}>English</Text>
-            </TouchableOpacity>
-                })
-            }
-            
-            
-          </View>
-        </TouchableOpacity>
-      }
                 </ScrollView>
             </ImageBackground>
         </View>
@@ -414,37 +450,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
         fontWeight: 'bold'
-    },
-    selectlanguageContainer: {
-        height: '100%',
-        width: '100%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        backgroundColor: 'rgba(46, 46, 46, 0.658)',
-        top: 0
-      },
-      languageGroup: {
-        height: 100,
-        width: '80%',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // backgroundColor:'#ffff',
-        // borderRadius:10
-      },
-      englishLanguageBtn: {
-        width: '90%',
-        height: '48%',
-        backgroundColor: '#fff8f0',
-        borderRadius: 10,
-        marginVertical: 5,
-        alignItems: 'center',
-        justifyContent: 'center'
-      },
-      languageTxt: {
-        color: "#505050",
-        fontWeight: '600',
-        fontSize: 14
-      }
+    }
 
 })

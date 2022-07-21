@@ -28,13 +28,30 @@ const MyProfile = ({ navigation }) => {
 
 
     })
+    const [name, setname] = useState('')
+    const [email, setemail] = useState('')
+    const [gender, setgender] = useState('')
+    const [mobile, setmobile] = useState('')
+    const [photo, setphoto] = useState('')
+    const [userType, setuserType] = useState('')
     const [My_Profile, setMy_Profile] = useState([])
     const getMultiple = async () => {
 
 
         try {
-            const values = await AsyncStorage.multiGet(["@name", "@email", '@gender', '@mobile', '@photo', '@usertype'])
-            setMy_Profile(values)
+            
+            const Name = await AsyncStorage.getItem("@name")
+            setname(Name)
+            const Email = await AsyncStorage.getItem("@email")
+            setemail(Email)
+            const Gender = await AsyncStorage.getItem("@gender")
+            setgender(Gender)
+            const Mobile = await AsyncStorage.getItem("@mobile")
+            setmobile(Mobile)
+            const Photo = await AsyncStorage.getItem("@photo")
+            setphoto(Photo)
+            const Usertype = await AsyncStorage.getItem("@usertype")
+            setuserType(Usertype)
             // console.log(values)
 
         } catch (e) {
@@ -46,6 +63,7 @@ const MyProfile = ({ navigation }) => {
         // example console.log output:
         // [ ['@MyApp_user', 'myUserValue'], ['@MyApp_key', 'myKeyValue'] ]
     }
+    // console.log(My_Profile)
 
     return (
         <View style={styles.container}>
@@ -62,7 +80,7 @@ const MyProfile = ({ navigation }) => {
                             <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/formnamelogo.png')} /></View>
                             <View style={styles.inputTxtMain}>
                                 <Text style={styles.inputHeading}>{i18n.t('Name')}</Text>
-                                <Text style={styles.input}>{My_Profile[0]}</Text>
+                                <Text style={styles.input}>{name}</Text>
                             </View>
                         </View>
 
@@ -70,21 +88,21 @@ const MyProfile = ({ navigation }) => {
                             <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/gender_logo.png')} /></View>
                             <View style={styles.inputTxtMain}>
                                 <Text style={styles.inputHeading}>{i18n.t('Gender')}</Text>
-                                <Text style={styles.input}>{My_Profile[1]}</Text>
+                                <Text style={styles.input}>{gender}</Text>
                             </View>
                         </View>
                         <View style={styles.inputMain}>
                             <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/mobile_logo.png')} /></View>
                             <View style={styles.inputTxtMain}>
                                 <Text style={styles.inputHeading}>{i18n.t('Mobile')}</Text>
-                                <Text style={styles.input}>{My_Profile[2]}</Text>
+                                <Text style={styles.input}>{mobile}</Text>
                             </View>
                         </View>
                         <View style={styles.inputMain}>
                             <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/email_logo.png')} /></View>
                             <View style={styles.inputTxtMain}>
                                 <Text style={styles.inputHeading}>{i18n.t('Email')}</Text>
-                                <Text style={styles.input}>{My_Profile[3]}</Text>
+                                <Text style={styles.input}>{email}</Text>
                             </View>
                         </View>
                         {/* <TouchableOpacity style={styles.submitBtn} onPress={()=>navigation.navigate('EditProfile')}>

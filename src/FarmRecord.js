@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput, ImageBackground, Dimensions } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput, ImageBackground, Dimensions,Alert } from 'react-native'
+import React, { useState ,useEffect} from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import Navbar from './Navbar';
 import DateTimePicker from '@react-native-community/datetimepicker'
@@ -7,6 +7,7 @@ import Header from './Header';
 import { en, sw } from './Action/Store/Language'
 import i18n from 'i18n-js'
 import { useSelector, useDispatch } from 'react-redux'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 // DateTimePickerAndroid.open(params: AndroidNativeProps)
@@ -23,7 +24,7 @@ const FarmRecord = ({ navigation }) => {
 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [dated, setDated] = useState(new Date());
-    const [datetTxt, setdatetTxt] = useState('');
+    const [record_date, setrecord_date] = useState('');
     const [dateFrom, setDateFrom] = useState(new Date());
     const [datefromTxt, setdatefromTxt] = useState('')
     const [selectedfrom, setselectedfrom] = useState(true)
@@ -36,7 +37,7 @@ const FarmRecord = ({ navigation }) => {
     const [show, setShow] = useState(false);
     const [selected, setselected] = useState(true)
     const [open, setOpen] = useState(false)
-
+const [cdata, setcdata] = useState([])
     const onSelect = () => {
         setDatePickerVisibility(true)
         setselected(false)
@@ -46,8 +47,8 @@ const FarmRecord = ({ navigation }) => {
         let currendDate = selectedDate
         let tempDate = new Date(currendDate)
         setDated(tempDate)
-        let text = `${tempDate.getDate()} / ${tempDate.getMonth() + 1} / ${tempDate.getFullYear()}`
-        setdatetTxt(text)
+        let text = ` ${tempDate.getFullYear()}-${tempDate.getMonth() + 1}-${tempDate.getDate()}`
+        setrecord_date(text)
         setDatePickerVisibility(false)
         setselected(false)
     }
@@ -76,6 +77,47 @@ const FarmRecord = ({ navigation }) => {
         setdateToTxt(text)
         setdateToShow(false)
         setselectedTo(false)
+    }
+    const TitleChange = (value)=>{
+        settitle(value)
+    }
+    const descriptionChange = (value)=>{
+        setdescription(value)
+    }
+    const RecordCreate = async () => {
+       
+        const Mytoken = await AsyncStorage.getItem('@MyApp_Token')
+        const user_id = await AsyncStorage.getItem("@MyApp_userId")
+        let items = { user_id:user_id, title, description,record_date }
+    fetch('http://170.187.249.74:8080/farmer/record/create',{
+        method:'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": Mytoken,
+        },
+        body:JSON.stringify(items)
+    })
+        .then(res => res.json())
+        .then(json => {
+           
+            console.log(json)
+            if(json.status===true){
+                Alert.alert(
+                                "HELLO!",
+                                "Record Created successfully",
+                
+                                [
+                
+                                  { text: "OK", onPress: () => console.log("OK Pressed") }
+                                ]
+                              );
+                            settitle('')
+                            setdescription('')
+
+            }
+        })
+
     }
     const AnnouncementData = [
         {
@@ -108,7 +150,40 @@ const FarmRecord = ({ navigation }) => {
         },
 
     ]
-
+    useEffect(()=>{
+        getUserType()
+    },[])
+    const [title, settitle] = useState('')
+    const [description, setdescription] = useState('')
+    const getUserType = async () => {
+        try {
+            const user_id = await AsyncStorage.getItem("@MyApp_userId")
+            const Mytoken = await AsyncStorage.getItem('@MyApp_Token')
+            if(user_id!==null){
+                fetch(`http://170.187.249.74:8080/farmer/record/user/${user_id}`,{
+                    method:'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": Mytoken,
+                    }
+                })
+                    .then(res => res.json())
+                    .then(json => {
+                       
+                        if(json.result!==null){
+                           setcdata(json.result)
+                        }
+                        console.log(json)
+                    })
+            
+          }else{
+            console.log('user id not found')
+          }
+        } catch (e) {
+            console.log('eror')
+        }
+    }
 
 
     return (
@@ -122,14 +197,14 @@ const FarmRecord = ({ navigation }) => {
                             <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/textlogo.png')} /></View>
                             <View style={styles.inputTxtMain}>
                                 <Text style={styles.inputHeading}>Title</Text>
-                                <TextInput style={styles.input} value='' placeholder='Title here...' />
+                                <TextInput style={styles.input} value={title} onChangeText={TitleChange} placeholder='Title here...' />
                             </View>
                         </View>
                         <View style={styles.inputMainTextarea}>
                             <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/titlelogo.png')} /></View>
                             <View style={styles.inputTxtMain}>
                                 <Text style={styles.inputHeading}>{i18n.t('Description')}</Text>
-                                <TextInput style={styles.input} value='' placeholder={`${i18n.t('Type_here')}....`} />
+                                <TextInput style={styles.input} value={description} onChangeText={descriptionChange} placeholder={`${i18n.t('Type_here')}....`} />
                             </View>
                         </View>
                         <View>
@@ -139,7 +214,7 @@ const FarmRecord = ({ navigation }) => {
                                 <View style={styles.inputTxtMain}>
                                     <Text style={styles.inputHeading}>{i18n.t('Date')}</Text>
                                     {selected && <Text style={styles.input}>Select Date</Text>}
-                                    {!selected && <Text>selected: {`${datetTxt}`}</Text>}
+                                    {!selected && <Text>selected: {`${record_date}`}</Text>}
                                 </View>
                             </TouchableOpacity>
                             {isDatePickerVisible && <DateTimePicker
@@ -152,7 +227,7 @@ const FarmRecord = ({ navigation }) => {
 
 
                         </View>
-                        <TouchableOpacity style={styles.submitbtn}><Text style={styles.btnTxt}>{i18n.t('Add_record')}</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.submitbtn} onPress={RecordCreate}><Text style={styles.btnTxt}>{i18n.t('Add_record')}</Text></TouchableOpacity>
 
 
 
@@ -203,11 +278,11 @@ const FarmRecord = ({ navigation }) => {
 
                         </View>
                         {
-                            AnnouncementData.map((item, ind) => {
+                            cdata?.map((item, ind) => {
                                 return (
                                     <TouchableOpacity key={ind} style={styles.AnnouncementMain}>
 
-                                        <Text style={styles.AnnouncementHeading}>{item.heading}</Text>
+                                        <Text style={styles.AnnouncementHeading}>{item.title}</Text>
 
 
                                         <Text style={styles.Datea}>{item.date}</Text>

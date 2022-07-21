@@ -45,7 +45,7 @@ const Trainig = ({ navigation }) => {
                     .then(res => res.json())
                     .then(json => {
                         setCdata(json.result)
-                        console.log(value)
+                        console.log(json)
                     })
             }
             else if (value === 'cooperative') {
@@ -75,9 +75,26 @@ const Trainig = ({ navigation }) => {
 
     // const Training = useSelector((state)=>state.mapingreducer)
     const [details, setdetails] = useState()
-    const getIndex = key => event => {
+    const getIndex =  key => async event => {
         let data = (key)
+        // let token = TriainingId
+        let userId = cdata[data]._id
+        const UserId = userId
 
+        const jsonValue = JSON.stringify(cdata[data]._id)
+        // setAppToken(token)
+        // setId(UserId)
+        const firstPair = ["@Training_id_s", jsonValue]
+        const secondPair = ["@Training_Id", UserId]
+
+        try {
+
+
+            await AsyncStorage.multiSet([firstPair, secondPair])
+              console.log('done')
+        } catch (e) {
+            console.log('not stor')
+        }
         return (
             navigation.navigate('Accordion', { key: `${data}` }))
     }

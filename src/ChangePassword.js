@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, Switch, TextInput, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, Switch, TextInput, Dimensions,Alert } from 'react-native'
 import React, { useState, useEffect } from 'react';
 import Header from './Header'
 import { AntDesign } from '@expo/vector-icons';
@@ -50,6 +50,49 @@ const ChangePassword = ({ navigation }) => {
         .then(json => {
            
             console.log(json)
+            if(json.status === true){
+                Alert.alert(
+                    "HELLO!",
+                    "Password Updated successfully",
+    
+                    [
+    
+                      { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                  );
+                setold_password('')
+                setnew_password('')
+                setconfirm_password('')
+               
+            }else if(new_password !== confirm_password){
+                Alert.alert(
+                    "HELLO!",
+                    "Password do not Match",
+    
+                    [
+    
+                      { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                  );
+                  setold_password('')
+                setnew_password('')
+                setconfirm_password('')
+            }else{
+                Alert.alert(
+                    "HELLO!",
+                    "Somthing went wrong!",
+    
+                    [
+    
+                      { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                  );
+                  setold_password('')
+                setnew_password('')
+                setconfirm_password('')
+            }
+            console.log(json)
+        
         })
 
     }

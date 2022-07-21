@@ -131,7 +131,7 @@ const Announcement = ({ navigation }) => {
                 <ScrollView>
                     <View style={{ marginBottom: 30 }}>
                         {
-                            cdata.map((item, ind) => {
+                            cdata?.map((item, ind) => {
                                 return (
                                     <TouchableOpacity key={ind} style={styles.AnnouncementMain}>
 

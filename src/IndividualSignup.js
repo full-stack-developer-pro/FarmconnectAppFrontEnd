@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput, ImageBackground, FlatList } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView, TextInput, ImageBackground, FlatList,Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import Header from './Header';
@@ -45,9 +45,9 @@ const IndividualSignup = ({ navigation }) => {
 
     const MemberChange = (Value) => {
 
-        setMember_number(Value)
-        let num = parseInt(Member_number)
-        setmember_number(num)
+        setmember_number(Value)
+        // let num = parseInt(Member_number)
+        // setmember_number(num)
 
     }
     const GenderChange = (Value) => {
@@ -57,9 +57,9 @@ const IndividualSignup = ({ navigation }) => {
 
     const MobileChange = (Value) => {
 
-        setMobile(Value)
-        let num = parseInt(Mobile)
-        setmobile(num)
+        setmobile(Value)
+        // let num = parseInt(Mobile)
+        // setmobile(num)
 
     }
     const EmailChange = (Value) => {
@@ -72,24 +72,55 @@ const IndividualSignup = ({ navigation }) => {
     }
 
     const AgeChange = (Value) => {
-        setAge(Value)
-        let num = parseInt(Age)
-        setage(num)
+        setage(Value)
+        // let num = parseInt(Age)
+        // setage(num)
 
     }
     const FirmSizeChange = (Value) => {
-        setSize_of_farm(Value)
-        let num = parseInt(Size_of_farm)
-        setsize_of_farm(num)
+        setsize_of_farm(Value)
+        // let num = parseInt(Size_of_farm)
+        // setsize_of_farm(num)
 
     }
     const SubmitForm = () => {
         let items = { name, member_number, gender, mobile, email, password, age, size_of_farm, photo, usertype }
-        dispatch(registration(items))
-        console.log(items)
-        console.log(test_store)
-
-        // navigation.navigate('Login')
+        fetch('http://170.187.249.74:8080/register',{
+            method:'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                
+            },
+            body:JSON.stringify(items)
+        })
+            .then(res => res.json())
+            .then(json => {
+                console.log(json)
+                if(json.status===true){
+                    Alert.alert(
+                        "HELLO!",
+                        "Registration Done Successfully",
+        
+                        [
+        
+                          { text: "OK", onPress: () => console.log("OK Pressed") }
+                        ]
+                      );
+                      navigation.navigate('Login')
+                }else{
+                    Alert.alert(
+                        "HELLO!",
+                        `${json.message}`,
+        
+                        [
+        
+                          { text: "OK", onPress: () => console.log("OK Pressed") }
+                        ]
+                      );
+                }
+               
+            })
     }
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -146,7 +177,7 @@ const IndividualSignup = ({ navigation }) => {
                                 <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/number_logo.png')} /></View>
                                 <View style={styles.inputTxtMain}>
                                     <Text style={styles.inputHeading}>Member Number</Text>
-                                    <TextInput style={styles.input} value={Member_number} onChangeText={MemberChange} numeric keyboardType={'numeric'} placeholder='Enter Member here' />
+                                    <TextInput style={styles.input} value={member_number} onChangeText={MemberChange} numeric keyboardType={'numeric'} placeholder='Enter Member here' />
                                 </View>
                             </View>
                             <View style={styles.inputMain}>
@@ -170,7 +201,7 @@ const IndividualSignup = ({ navigation }) => {
                                 <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/mobile_logo.png')} /></View>
                                 <View style={styles.inputTxtMain}>
                                     <Text style={styles.inputHeading}>Mobile</Text>
-                                    <TextInput style={styles.input} value={Mobile} onChangeText={MobileChange} numeric keyboardType={'numeric'} placeholder='Enter contact details' />
+                                    <TextInput style={styles.input} value={mobile} onChangeText={MobileChange} numeric keyboardType={'numeric'} placeholder='Enter contact details' />
                                 </View>
                             </View>
                             <View style={styles.inputMain}>
@@ -192,14 +223,14 @@ const IndividualSignup = ({ navigation }) => {
                                 <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/age_logo.png')} /></View>
                                 <View style={styles.inputTxtMain}>
                                     <Text style={styles.inputHeading}>Age(Optional)</Text>
-                                    <TextInput style={styles.input} numeric keyboardType={'numeric'} value={Age} onChangeText={AgeChange} placeholder='Enter age here' />
+                                    <TextInput style={styles.input} numeric keyboardType={'numeric'} value={age} onChangeText={AgeChange} placeholder='Enter age here' />
                                 </View>
                             </View>
                             <View style={styles.inputMain}>
                                 <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/size_logo.png')} /></View>
                                 <View style={styles.inputTxtMain}>
                                     <Text style={styles.inputHeading}>Size of Firm(Optional)</Text>
-                                    <TextInput style={styles.input} numeric keyboardType={'numeric'} value={Size_of_farm} onChangeText={FirmSizeChange} placeholder='123' />
+                                    <TextInput style={styles.input} numeric keyboardType={'numeric'} value={size_of_farm} onChangeText={FirmSizeChange} placeholder='123' />
                                 </View>
                             </View>
 
