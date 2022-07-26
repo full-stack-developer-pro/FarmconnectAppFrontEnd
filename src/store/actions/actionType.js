@@ -80,3 +80,6 @@ export const GET_WEATHER = 'GET_WEATHER';
 
 // Farmer Record Api
 export const FARMER_RECORD = 'FARMER_RECORD';
+export const ASK_AGRONOMIST = 'ASK_AGRONOMIST';
+export const PROFILE_UPDATE ='PROFILE_UPDATE';
+export const GET_QUERIES ='GET_QUERIES';

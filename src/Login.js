@@ -1,21 +1,19 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import i18n from "i18n-js";
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
-  Image,
-  ImageBackground,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Image,
+    ImageBackground,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { en, sw } from "./Action/Store/Language";
 import { LOGIN, USER_PROFILE_DETAILS } from "./store/actions/actionType";
-import { LoginC } from "./store/actions/Login";
-import { GetUserProfileDetailsById } from "./store/actions/Profile";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Login = ({ navigation }) => {
   const My_Profile = useSelector((state) => state.user[USER_PROFILE_DETAILS]);
   const mynum = useSelector((state) => state.counter.value);
@@ -40,13 +38,13 @@ const Login = ({ navigation }) => {
 
   const [member_number, setmember_number] = useState("");
   const [gender, setgender] = useState("");
-
+  const [Mobile, setMobile] = useState("");
   const [mobile, setmobile] = useState("");
-  const [email, setemail] = useState("arvindkumar19@gmail.com");
-  const [password, setpassword] = useState("1111");
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
   const [age, setage] = useState("");
-  const [photo, setphoto] = useState("test1ff.jpg");
-  const [usertype, setusertype] = useState("farmer");
+  const [photo, setphoto] = useState("");
+  const [usertype, setusertype] = useState("");
 
   // const ChangePassword = ()=>{
   //     setfirstLogin(false)
@@ -73,136 +71,203 @@ const Login = ({ navigation }) => {
   // }
 
   const LoginMobileNumberChange = (Value) => {
-    setemail(Value);
+    setmobile(Value);
+    // let num = Mobile
+    // setmobile(Value)
   };
   const LoginPsswordChange = (Value) => {
     setpassword(Value);
   };
-  // const ChengePasswordFirstChange=(Value)=>{
-  //     setChengePasswordFirst(Value)
-  // }
-  // const ChangePasswordConfirmChange=(Value)=>{
-  //     setChangePasswordConfirm(Value)
-  // }
+};
+// const setProfileData=()=>{
+//     let user = test_store.user;
+//     setname(user.name)
+//     setmember_number(user.member_number)
+//     setgender(user.gender)
+//     setmobile(user.mobile)
+//     setemail(user.email)
+//     setpassword(user.password)
+//     setage(user.age)
+//     setphoto(user.photo)
+//     setusertype(user.usertype)
 
-  const LoginBtn = () => {
-    let items = { email, password, usertype };
-    dispatch(LoginC(items));
-    storeprofileData();
-  };
-  // const GetProfileData = ()=>{
-  //     let items = {name,member_number,gender,mobile,email,password,age,photo,usertype}
-  //     console.log(items)
-
-  // }
-  let token = test_store.accesstoken;
-
-  const [Tokenstate, setTokenstate] = useState();
-
-  const storeData = async () => {
-    let userId = test_store.user._id;
-    const UserId = userId;
-
-    const jsonValue = JSON.stringify(token);
-    const firstPair = ["@MyApp_Token", jsonValue];
-    const secondPair = ["@MyApp_userId", UserId];
-
-    try {
-      await AsyncStorage.multiSet([firstPair, secondPair]);
-      //   console.log('done')
-    } catch (e) {
-      console.log("not stor");
-    }
-  };
-  useEffect(() => {
-    if (test_store.status === true) {
-      // setProfileData()
-      // GetProfileData()
-
+const LoginBtn = () => {
+  let items = { mobile, password };
+  fetch("http://170.187.249.74:8080/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(items),
+  })
+    .then((res) => res.json())
+    .then((json) => {
+      setLoginData(json);
+      console.log(LoginData);
+    });
+};
+useEffect(() => {
+  if (LoginData !== null) {
+    if (LoginData.status === true) {
       storeData();
+      storeprofileData();
+      getUserType();
     }
-  });
-  // const setProfileData=()=>{
-  //     let user = test_store.user;
-  //     setname(user.name)
-  //     setmember_number(user.member_number)
-  //     setgender(user.gender)
-  //     setmobile(user.mobile)
-  //     setemail(user.email)
-  //     setpassword(user.password)
-  //     setage(user.age)
-  //     setphoto(user.photo)
-  //     setusertype(user.usertype)
-
-  // }
-
-  useEffect(() => {
-    getUser();
-    // getData()
-    // getProfile()
-  });
-
-  async function getUser() {
-    const user_id = await AsyncStorage.getItem("@MyApp_userId");
-
-    dispatch(GetUserProfileDetailsById(user_id));
   }
-  // async function  getProfile(){
-  //     const Profile = await AsyncStorage.getItem("Profile_Details")
+});
+const [LoginData, setLoginData] = useState(null);
+// const GetProfileData = ()=>{
+//     let items = {name,member_number,gender,mobile,email,password,age,photo,usertype}
+//     console.log(items)
 
-  //    console.log(Profile)
+// }
 
-  // }
+const [Tokenstate, setTokenstate] = useState();
 
-  const storeprofileData = async () => {
-    const Name = ["@name", My_Profile.name];
-    const email = ["@email", My_Profile.email];
-    const Gender = ["@gender", My_Profile.gender];
-    const Mobile = ["@mobile", My_Profile.mobile];
-    const Photo = ["@photo", My_Profile.photo];
-    const Usertype = ["@usertype", My_Profile.usertype];
-    const MenberNumber = ["@member_number", My_Profile.member_number];
-    try {
-      await AsyncStorage.multiSet([
-        Name,
-        email,
-        Gender,
-        Mobile,
-        Photo,
-        Usertype,
-      ]);
-      navigation.navigate("Dashboard");
-      //   console.log('done')
-    } catch (e) {
-      console.log("not stor");
-    }
-  };
+// console.log(My_Profile)
 
-  // console.log(My_Profile)
+const storeData = async () => {
+  let token = LoginData.accesstoken;
+  let userId = LoginData.user._id;
+  const UserId = userId;
 
-  return (
-    <View style={styles.container}>
-      <ImageBackground
-        style={styles.bgImg}
-        source={require("../assets/login_background.png")}
-      >
-        <View style={styles.headerMain}>
-          <View style={styles.headerHeadingMain}>
-            <Text style={styles.headerHeading}>{i18n.t("Login")}</Text>
-          </View>
+  const jsonValue = token;
+  // setAppToken(token)
+  // setId(UserId)
+  const firstPair = ["@MyApp_Token", jsonValue];
+  const secondPair = ["@MyApp_userId", UserId];
+
+  try {
+    await AsyncStorage.multiSet([firstPair, secondPair]);
+    //   console.log('done')
+  } catch (e) {
+    console.log("not stor");
+  }
+};
+// useEffect(() => {
+
+//     if (test_store.status === true) {
+//         // setProfileData()
+//         // GetProfileData()
+
+//         console.log(test_store)
+//     }
+
+// })
+// const setProfileData=()=>{
+//     let user = test_store.user;
+//     setname(user.name)
+//     setmember_number(user.member_number)
+//     setgender(user.gender)
+//     setmobile(user.mobile)
+//     setemail(user.email)
+//     setpassword(user.password)
+//     setage(user.age)
+//     setphoto(user.photo)
+//     setusertype(user.usertype)
+
+// }
+const logResult = useCallback(() => {
+  return 2 + 2;
+}, []);
+
+// useEffect(() => {
+
+//     // getData()
+//     // getProfile()
+
+// },[logResult])
+
+const [Id, setId] = useState("");
+const [AppToken, setAppToken] = useState("");
+const [ProfileData, setProfileData] = useState("");
+
+//     async function getUser() {
+//         const user_id = await AsyncStorage.getItem("@MyApp_userId")
+// setId(user_id)
+//         const Mytoken = await AsyncStorage.getItem('@MyApp_Token')
+//         setAppToken(Mytoken)
+// console.log(AppToken)
+// console.log(Id)
+
+// }
+// async function  getProfile(){
+//     const Profile = await AsyncStorage.getItem("Profile_Details")
+
+//    console.log(Profile)
+
+// }
+
+const storeprofileData = async () => {
+  const Name = ["@name", ProfileData.name];
+  const email = ["@email", ProfileData.email];
+  const Gender = ["@gender", ProfileData.gender];
+  const Mobile = ["@mobile", ProfileData.mobile];
+  const Photo = ["@photo", ProfileData.photo];
+  const Usertype = ["@usertype", ProfileData.usertype];
+  const MenberNumber = ["@member_number", ProfileData.member_number];
+  try {
+    await AsyncStorage.multiSet([Name, email, Gender, Mobile, Photo, Usertype]);
+
+    //   console.log('done')
+  } catch (e) {
+    console.log("not stor");
+  }
+};
+
+// console.log(My_Profile)
+
+const getUserType = async () => {
+  try {
+    const user_id = await AsyncStorage.getItem("@MyApp_userId");
+    const Mytoken = await AsyncStorage.getItem("@MyApp_Token");
+    fetch(`http://170.187.249.74:8080/user/profile/${user_id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: Mytoken,
+      },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        setProfileData(json.result);
+        if (json.result !== null) {
+          navigation.navigate("Dashboard");
+          setmobile("");
+          setpassword("");
+          setLoginData(null);
+        }
+        console.log(json);
+      });
+  } catch (e) {
+    console.log("eror");
+  }
+};
+const resetBtn = async () => {
+  await AsyncStorage.clear();
+};
+
+return (
+  <View style={styles.container}>
+    <ImageBackground
+      style={styles.bgImg}
+      source={require("../assets/login_background.png")}
+    >
+      <View style={styles.headerMain}>
+        <View style={styles.headerHeadingMain}>
+          <Text style={styles.headerHeading}>{i18n.t("Login")}</Text>
         </View>
-        <View style={styles.fomrMain}>
-          <View style={styles.textMain}>
-            <Text style={styles.textHeading}>Welcome Back</Text>
-            {/* {firstLogin && <Text style={styles.textTxt}>Please Change Password</Text>} */}
-            {/* {changePassword && <Text style={styles.textTxt}>Please Change Password</Text>} */}
-            <Text style={styles.textTxt}>
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
-              commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-              penatibus
-            </Text>
-          </View>
-          {/* {firstLogin && <View style={styles.inputMain}>
+      </View>
+      <View style={styles.fomrMain}>
+        <View style={styles.textMain}>
+          <Text style={styles.textHeading}>Welcome Back</Text>
+          {/* {firstLogin && <Text style={styles.textTxt}>Please Change Password</Text>} */}
+          {/* {changePassword && <Text style={styles.textTxt}>Please Change Password</Text>} */}
+          <Text style={styles.textTxt}>Please Login Here</Text>
+        </View>
+        {/* {firstLogin && <View style={styles.inputMain}>
             <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/mobile_logo.png')}/></View>
             <View style={styles.inputTxtMain}>
                 <Text style={styles.inputHeading}>{i18n.t('Mobile')}</Text>
@@ -216,83 +281,83 @@ const Login = ({ navigation }) => {
                 <TextInput style={styles.input} value={ChengePasswordFirst} onChangeText={ChengePasswordFirstChange} placeholder='Enter password here' secureTextEntry={true}/>
             </View>
         </View>} */}
-          <View style={styles.inputMain}>
-            <View style={styles.formImgMain}>
-              <Image
-                style={styles.formImg}
-                source={require("../assets/mobile_logo.png")}
-              />
-            </View>
-            <View style={styles.inputTxtMain}>
-              <Text style={styles.inputHeading}>{i18n.t("Mobile")}</Text>
-              <TextInput
-                style={styles.input}
-                value={email}
-                onChangeText={LoginMobileNumberChange}
-                placeholder="Enter contact details"
-              />
-            </View>
+        <View style={styles.inputMain}>
+          <View style={styles.formImgMain}>
+            <Image
+              style={styles.formImg}
+              source={require("../assets/mobile_logo.png")}
+            />
           </View>
-          {/* {firstLogin &&  <View style={styles.inputMain}>
+          <View style={styles.inputTxtMain}>
+            <Text style={styles.inputHeading}>{i18n.t("Mobile")}</Text>
+            <TextInput
+              style={styles.input}
+              value={mobile}
+              onChangeText={LoginMobileNumberChange}
+              placeholder="Enter contact details"
+            />
+          </View>
+        </View>
+        {/* {firstLogin &&  <View style={styles.inputMain}>
             <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/password_logo.png')}/></View>
             <View style={styles.inputTxtMain}>
                 <Text style={styles.inputHeading}>{i18n.t('Password')}</Text>
                 <TextInput style={styles.input} value={LoginPssword} onChangeText={LoginPsswordChange} placeholder='Enter password here'secureTextEntry={true} />
             </View>
         </View>} */}
-          {/* {changePassword &&  <View style={styles.inputMain}>
+        {/* {changePassword &&  <View style={styles.inputMain}>
             <View style={styles.formImgMain}><Image style={styles.formImg} source={require('../assets/password_logo.png')}/></View>
             <View style={styles.inputTxtMain}>
                 <Text style={styles.inputHeading}>{i18n.t('Confirm_password')}</Text>
                 <TextInput style={styles.input} value={ChangePasswordConfirm} onChangeText={ChangePasswordConfirmChange} placeholder='Enter password here' secureTextEntry={true}/>
             </View>
         </View>} */}
-          <View style={styles.inputMain}>
-            <View style={styles.formImgMain}>
-              <Image
-                style={styles.formImg}
-                source={require("../assets/password_logo.png")}
-              />
-            </View>
-            <View style={styles.inputTxtMain}>
-              <Text style={styles.inputHeading}>{i18n.t("Password")}</Text>
-              <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={LoginPsswordChange}
-                placeholder="Enter password here"
-                secureTextEntry={true}
-              />
-            </View>
+        <View style={styles.inputMain}>
+          <View style={styles.formImgMain}>
+            <Image
+              style={styles.formImg}
+              source={require("../assets/password_logo.png")}
+            />
           </View>
-          <TouchableOpacity
-            style={styles.forgotbtn}
-            onPress={() => navigation.navigate("ForgotPassword")}
-          >
-            <Text style={styles.forgottxt}>Forgot Password.</Text>
-          </TouchableOpacity>
-          {/* {firstLogin && <TouchableOpacity style={styles.submitBtn} onPress={ChangePassword}>
-            <Text style={styles.submitTxt}>{i18n.t('Change_password')}</Text>
-        </TouchableOpacity>} */}
-          {/* {changePassword && <TouchableOpacity style={styles.submitBtn} onPress={Update} >
-            <Text style={styles.submitTxt} >UPDATE</Text>
-        </TouchableOpacity>} */}
-          <TouchableOpacity style={styles.submitBtn} onPress={LoginBtn}>
-            <Text style={styles.submitTxt}>{i18n.t("Login")}</Text>
-          </TouchableOpacity>
-          <View style={styles.signintxtMain}>
-            <Text style={styles.alreadyTxt}>
-              {i18n.t("Dont_have_an_account")}{" "}
-            </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
-              <Text style={styles.signinTxt}>{i18n.t("Sign_up_here")}</Text>
-            </TouchableOpacity>
+          <View style={styles.inputTxtMain}>
+            <Text style={styles.inputHeading}>{i18n.t("Password")}</Text>
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={LoginPsswordChange}
+              placeholder="Enter password here"
+              secureTextEntry={true}
+            />
           </View>
         </View>
-      </ImageBackground>
-    </View>
-  );
-};
+        <TouchableOpacity
+          style={styles.forgotbtn}
+          onPress={() => navigation.navigate("ForgotPassword")}
+        >
+          <Text style={styles.forgottxt}>Forgot Password.</Text>
+        </TouchableOpacity>
+        {/* {firstLogin && <TouchableOpacity style={styles.submitBtn} onPress={ChangePassword}>
+            <Text style={styles.submitTxt}>{i18n.t('Change_password')}</Text>
+        </TouchableOpacity>} */}
+        {/* {changePassword && <TouchableOpacity style={styles.submitBtn} onPress={Update} >
+            <Text style={styles.submitTxt} >UPDATE</Text>
+        </TouchableOpacity>} */}
+        <TouchableOpacity style={styles.submitBtn} onPress={LoginBtn}>
+          <Text style={styles.submitTxt}>{i18n.t("Login")}</Text>
+        </TouchableOpacity>
+
+        <View style={styles.signintxtMain}>
+          <Text style={styles.alreadyTxt}>
+            {i18n.t("Dont_have_an_account")}{" "}
+          </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
+            <Text style={styles.signinTxt}>{i18n.t("Sign_up_here")}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </ImageBackground>
+  </View>
+);
 
 export default Login;
 

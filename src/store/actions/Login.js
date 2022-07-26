@@ -1,29 +1,39 @@
-import { Alert } from "react-native";
-import { axiosPost } from "../axiosHelper";
+
+import { axiosPostRL } from "../axiosHelperLogin";
 import { LOGIN } from "./actionType";
 
 export function LoginC(post) {
-  return (dispatch) => {
-    return axiosPost(
-      { url: "/login", reqBody: post, skipAuth: true },
-      (response) => {
-        dispatch({
-          type: LOGIN,
-          [LOGIN]: response.data,
-        });
-        if (response.data?.success === true) {
-          Alert.alert(
-            "HELLO!",
-            "Password do not Match",
-            [{ text: "OK", onPress: () => console.log("OK Pressed") }]
-          );
-        }
-        if (response.data?.success === false) {
-          errorNotification(response.data?.message);
-        }
-      }
-    );
-  };
+    return dispatch => {
+        return axiosPostRL({ url: "/login", reqBody: post, skipAuth: true }, (response) => {
+            // if (response.data?.result?.token) window.localStorage.setItem('rtoken', response.data?.result?.token)
+            // if (response.data?.result?._id) window.localStorage.setItem('ruserId', response.data?.result?._id)
+            // if (response.data?.result?.token) window.localStorage.setItem('token', response.data?.result?.token)
+            // if (response.data?.result?._id) window.localStorage.setItem('userId', response.data?.result?._id)
+            dispatch({
+                type: LOGIN,
+                [LOGIN]: response.data
+            });
+            if (response.data?.success === true) {
+                Alert.alert(
+                    "HELLO!",
+                    "Password do not Match",
+
+                    [
+
+                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                );
+                // successNotification(response.data?.message);
+                // setTimeout(function(){
+                //     window.location.href = '/auth/verify-email'
+                //     // window.location.href = `/auth/verify-email?email=${response.data?.result?.email}`
+                // },500)
+            }
+            if (response.data?.success === false) {
+                errorNotification(response.data?.message)
+            }
+        })
+    };
 }
 
 export function logout() {
@@ -72,23 +82,23 @@ export function VerifyOtp(post, setreset, setotp, reset) {
 }
 
 export function forgotPasswordVerify(post, setuser, setreset) {
-  return (dispatch) => {
-    return axiosPost(
-      { url: "/user/forgotPassword/verify", reqBody: post, skipAuth: true },
-      (response) => {
-        dispatch({
-          type: VERIFY_OTP,
-          [VERIFY_OTP]: response.data,
-        });
-        if (response.data?.success === true) {
-          successNotification(response?.data?.message);
-          setuser(true);
-          setreset(false);
-        }
-        if (response.data?.success === false) {
-          errorNotification(response.data?.message);
-        }
-      }
-    );
-  };
+    return (dispatch) => {
+        return axiosPost(
+            { url: "/user/forgotPassword/verify", reqBody: post, skipAuth: true },
+            (response) => {
+                dispatch({
+                    type: VERIFY_OTP,
+                    [VERIFY_OTP]: response.data,
+                });
+                if (response.data?.success === true) {
+                    successNotification(response?.data?.message);
+                    setuser(true);
+                    setreset(false);
+                }
+                if (response.data?.success === false) {
+                    errorNotification(response.data?.message);
+                }
+            }
+        );
+    };
 }

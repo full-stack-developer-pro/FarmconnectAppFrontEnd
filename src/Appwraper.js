@@ -36,40 +36,40 @@ import CameraStart from './Camera';
 export default function Appwraper() {
   const Stack = createNativeStackNavigator();
   return (
-    
+
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Back' screenOptions={{headerShown:false}}>
-        <Stack.Screen name="Language" component={Language}/>
-        <Stack.Screen name="GetStarted" component={GetStarted}/>
-        <Stack.Screen name="SignupLogin" component={SignupLogin}/>
-        <Stack.Screen name="Signup" component={Signup}/>
-        <Stack.Screen name="CooperativeSignup" component={CooperativeSignup}/>
-        <Stack.Screen name="IndividualSignup" component={IndividualSignup}/>
-        <Stack.Screen name="Login" component={Login}/>
-        <Stack.Screen name="Dashboard" component={Dashboard}/>
-        <Stack.Screen name="Announcement" component={Announcement}/>
-        <Stack.Screen name="Trainig" component={Trainig}/>
-        <Stack.Screen name="Module1test" component={Module1test}/>
-        <Stack.Screen name="Accordion" component={Accordion}/>
-        <Stack.Screen name="Quastion" component={Quastion}/>
-        <Stack.Screen name="Agronomist" component={Agronomist}/>
-        <Stack.Screen name="Myquastion" component={Myquastion}/>
-        <Stack.Screen name="Weather" component={Weather}/>
-        <Stack.Screen name="Market" component={Market}/>
-        <Stack.Screen name="FarmRecord" component={FarmRecord}/>
-        <Stack.Screen name="Notification" component={Notification}/>
-        <Stack.Screen name="MyProfile" component={MyProfile}/>
-        <Stack.Screen name="Settings" component={Settings}/>
-        <Stack.Screen name="ChangePassword" component={ChangePassword}/>
-        <Stack.Screen name="MarketDetails" component={MarketDetails}/>
-        <Stack.Screen name="ForgotPassword" component={ForgotPassword}/>
-        <Stack.Screen name="RecoverPassword" component={RecoverPassword}/>
-        <Stack.Screen name="EditProfile" component={EditProfile}/>
-        <Stack.Screen name="CameraStart" component={CameraStart}/>
-      
+      <Stack.Navigator initialRouteName='Back' screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Language" component={Language} />
+        <Stack.Screen name="GetStarted" component={GetStarted} />
+        <Stack.Screen name="SignupLogin" component={SignupLogin} />
+        <Stack.Screen name="Signup" component={Signup} />
+        <Stack.Screen name="CooperativeSignup" component={CooperativeSignup} />
+        <Stack.Screen name="IndividualSignup" component={IndividualSignup} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Dashboard" component={Dashboard} />
+        <Stack.Screen name="Announcement" component={Announcement} />
+        <Stack.Screen name="Trainig" component={Trainig} />
+        <Stack.Screen name="Module1test" component={Module1test} />
+        <Stack.Screen name="Accordion" component={Accordion} />
+        <Stack.Screen name="Quastion" component={Quastion} />
+        <Stack.Screen name="Agronomist" component={Agronomist} />
+        <Stack.Screen name="Myquastion" component={Myquastion} />
+        <Stack.Screen name="Weather" component={Weather} />
+        <Stack.Screen name="Market" component={Market} />
+        <Stack.Screen name="FarmRecord" component={FarmRecord} />
+        <Stack.Screen name="Notification" component={Notification} />
+        <Stack.Screen name="MyProfile" component={MyProfile} />
+        <Stack.Screen name="Settings" component={Settings} />
+        <Stack.Screen name="ChangePassword" component={ChangePassword} />
+        <Stack.Screen name="MarketDetails" component={MarketDetails} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+        <Stack.Screen name="RecoverPassword" component={RecoverPassword} />
+        <Stack.Screen name="EditProfile" component={EditProfile} />
+        <Stack.Screen name="CameraStart" component={CameraStart} />
+
       </Stack.Navigator>
     </NavigationContainer>
-    
+
   );
 }
 

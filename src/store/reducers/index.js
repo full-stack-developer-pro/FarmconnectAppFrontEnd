@@ -8,7 +8,8 @@ import profileReducer from './profileReducer';
 import imageReducer from './imageLightBoxReducer';
 import updateProfileReducer from './UpdateProfile'
 import TrainingReducer from './TrainingReducer'
-
+import AgronomistReducer from './AgronomistReducer'
+import GetQueriesReducer from './GetQueriesReducer'
 
 // const rootReducer = combineReducers({
 //     auth: authReducer,
@@ -21,9 +22,11 @@ import TrainingReducer from './TrainingReducer'
 
 const rootReducer = {
     auth: authReducer,
-    TrainingData:TrainingReducer,
-    update:updateProfileReducer,
-    Change:ChangePasswordReduser,
+    GetQueries:GetQueriesReducer,
+    Agro: AgronomistReducer,
+    TrainingData: TrainingReducer,
+    update: updateProfileReducer,
+    Change: ChangePasswordReduser,
     forgotPass: forgotPassReducer,
     device_token: deviceTokenReducer,
     user: profileReducer,

@@ -1,11 +1,11 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { StyleSheet, TextInput, View, Keyboard, Button } from "react-native";
 import { Feather, Entypo } from "@expo/vector-icons";
 
 const SearchBar = () => {
-    const [clicked, setCLicked] = useState()
-    const [searchPhrase, setSearchPhrase] = useState()
-    
+  const [clicked, setCLicked] = useState()
+  const [searchPhrase, setSearchPhrase] = useState()
+
   return (
     <View style={styles.container}>
       <View
@@ -35,8 +35,8 @@ const SearchBar = () => {
         {/* cross Icon, depending on whether the search bar is clicked or not */}
         {clicked && (
           <Entypo name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => {
-              setSearchPhrase("")
-          }}/>
+            setSearchPhrase("")
+          }} />
         )}
       </View>
       {/* cancel button, depending on whether the search bar is clicked or not */}

@@ -1,17 +1,17 @@
-import { USER_UPDATE_PROFILE} from "../actions/actionType"
+import { PROFILE_UPDATE} from "../actions/actionType"
 
 // import * as actionTypes from '../actions/actionType';
 const initialState = {
-    [USER_UPDATE_PROFILE]: [],
+    [PROFILE_UPDATE]: [],
     
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
 
-        case USER_UPDATE_PROFILE:
+        case PROFILE_UPDATE:
             return Object.assign({}, state, {
-                [USER_UPDATE_PROFILE]: action[USER_UPDATE_PROFILE]
+                [PROFILE_UPDATE]: action[PROFILE_UPDATE]
             })
       
 
