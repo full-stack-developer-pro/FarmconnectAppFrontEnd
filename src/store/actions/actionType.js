@@ -74,3 +74,9 @@ export const LIGHTBOX_DEFAULT_URL = 'LIGHTBOX_DEFAULT_URL';
 export const LIGHTBOX_IMAGES = 'LIGHTBOX_IMAGES';
 export const LIGHTBOX_VIEW_STATUS = 'LIGHTBOX_VIEW_STATUS';
 export const TRAINING_MODULE = 'TRAINING_MODULE';
+
+// Weather Api
+export const GET_WEATHER = 'GET_WEATHER';
+
+// Farmer Record Api
+export const FARMER_RECORD = 'FARMER_RECORD';
