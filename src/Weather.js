@@ -1,21 +1,25 @@
+import * as Location from "expo-location";
 import i18n from "i18n-js";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
+  Modal,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
-  ActivityIndicator,
   TouchableOpacity,
   View,
 } from "react-native";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { useDispatch, useSelector } from "react-redux";
 import { en, sw } from "./Action/Store/Language";
 import Header from "./Header";
 import Navbar from "./Navbar";
-import SearchBar from "./SearchBar";
-import * as Location from "expo-location";
+import Geocoder from "react-native-geocoding";
+Geocoder.init("AIzaSyC9Mif-Mxfm6nU2_79jiAkpxv7O8jPfLYQ");
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
@@ -27,35 +31,9 @@ const Weather = ({ navigation }) => {
   i18n.locale = mynum;
   const [errorMsg, setErrorMsg] = useState(null);
   const [weather, setWeather] = useState(null);
-  const [location, setLocation] = useState(null);
   const [Searchbar, setSearchbar] = useState(false);
-  const weatherdata = [
-    {
-      time: "Now",
-      tamp: "40°",
-    },
-    {
-      time: "Now",
-      tamp: "40°",
-    },
-    {
-      time: "Now",
-      tamp: "40°",
-    },
-    {
-      time: "Now",
-      tamp: "40°",
-    },
-    {
-      time: "Now",
-      tamp: "40°",
-    },
-    {
-      time: "Now",
-      tamp: "40°",
-    },
-  ];
-
+  const [weatherdata, setWeatherdata] = useState(null);
+  const [location, setLocation] = useState(false);
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -70,7 +48,6 @@ const Weather = ({ navigation }) => {
       try {
         let location = await Location.getCurrentPositionAsync();
         console.log(location);
-        setLocation(location);
         getWeatherDetails(location.coords.latitude, location.coords.longitude);
       } catch (error) {
         console.log("error");
@@ -79,15 +56,96 @@ const Weather = ({ navigation }) => {
     })();
   }, []);
 
+  function getWeatherImage(weather, style) {
+    let source = null;
+    if (weather == 0) {
+      source = require("../assets/Sunlogo.png");
+    } else if (weather == 1 || weather == 2 || weather == 3) {
+      source = require("../assets/icons/clear-sky.png");
+    } else if (weather == 45 || weather == 48) {
+      source = require("../assets/icons/fog.png");
+    } else if (weather == 51 || weather == 53 || weather == 55) {
+      source = require("../assets/icons/drizzle.png");
+    } else if (weather == 56 || weather == 57) {
+      source = require("../assets/icons/snow.png");
+    } else if (weather == 61 || weather == 63 || weather == 65) {
+      source = require("../assets/icons/rain.png");
+    } else if (weather == 66 || weather == 67) {
+      source = require("../assets/icons/snowflake.png");
+    } else if (weather == 73 || weather == 71 || weather == 75) {
+      source = require("../assets/icons/snow.png");
+    } else if (weather == 80 || weather == 81 || weather == 82) {
+      source = require("../assets/icons/shower.png");
+    } else if (weather == 86 || weather == 85) {
+      source = require("../assets/icons/snowshower.png");
+    } else if (weather == 95 || weather == 96 || weather == 99) {
+      source = require("../assets/icons/thunderstorm.png");
+    }
+    return <Image source={source} style={style} />;
+  }
+
+  function getWeatherName(weather) {
+    let name = null;
+    if (weather == 0) {
+      name = "Clear Sky";
+    } else if (weather == 1 || weather == 2 || weather == 3) {
+      name = "Partly Cloudy";
+    } else if (weather == 45 || weather == 48) {
+      name = "Fog";
+    } else if (weather == 51 || weather == 53 || weather == 55) {
+      name = "Drizzle";
+    } else if (weather == 56 || weather == 57) {
+      name = "Snow";
+    } else if (weather == 61 || weather == 63 || weather == 65) {
+      name = "Rain";
+    } else if (weather == 66 || weather == 67) {
+      name = "Snowflake";
+    } else if (weather == 73 || weather == 71 || weather == 75) {
+      name = "Snow";
+    } else if (weather == 80 || weather == 81 || weather == 82) {
+      name = "Rain Shower";
+    } else if (weather == 86 || weather == 85) {
+      name = "Snow Shower";
+    } else if (weather == 95 || weather == 96 || weather == 99) {
+      name = "Thunderstorm";
+    }
+    return name;
+  }
+
   const getWeatherDetails = async (lat, long) => {
-    const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&units=metric&appid=9cb9f757b49145cc2d3b3a1d0cdbb4b9
-      `
-    );
-    console.log('asdfasdfasdf');
-    const data = await response.json();
-    setWeather(data);
-    console.log(data);
+    let date = new Date().toISOString().toString().split("T")[0];
+    let url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=temperature_2m,relativehumidity_2m,weathercode,cloudcover&current_weather=true&windspeed_unit=ms&timezone=Asia%2FBangkok&start_date=${date}&end_date=${date}`;
+    const weather = await fetch(url);
+    const data = await weather.json();
+    Geocoder.from(lat, long)
+      .then((json) => {
+        var addressComponent = json.results[0].formatted_address;
+        let address = "";
+        address += json.results[0].address_components.filter((x) =>
+          x.types.includes("locality")
+        )[0].long_name;
+
+        address += ", ";
+        address += json.results[0].address_components.filter((x) =>
+          x.types.includes("country")
+        )[0].long_name;
+        setLocation(address);
+        console.log(address);
+      })
+      .catch((error) => console.warn(error));
+    if (data.current_weather) {
+      setWeather(data.current_weather);
+      let hour = [];
+      for (let i = 0; i < data.hourly.time.length; i++) {
+        hour.push({
+          time: data.hourly.time[i].toString().split("T")[1],
+          weather: data.hourly.weathercode[i],
+          temp: data.hourly.temperature_2m[i],
+        });
+      }
+      console.log(hour);
+      setWeatherdata(hour);
+    }
   };
 
   return (
@@ -99,7 +157,11 @@ const Weather = ({ navigation }) => {
           Notification={() => navigation.navigate("Notification")}
         />
         {weather ? (
-          <ScrollView style={{ top: 5 }} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            style={{ top: 5 }}
+            keyboardShouldPersistTaps="always"
+            showsVerticalScrollIndicator={false}
+          >
             <TouchableOpacity
               style={styles.searchLocationMain}
               onPress={() => setSearchbar(!Searchbar)}
@@ -115,10 +177,69 @@ const Weather = ({ navigation }) => {
                       <Text style={styles.searchLocationTxt}>
                         {i18n.t("Location")}
                       </Text>
-                      <Text style={styles.getLocationTxt}>{weather?.name}</Text>
+                      <Text style={styles.getLocationTxt}>{location}</Text>
                     </View>
                   )}
-                  {Searchbar && <SearchBar />}
+                  {Searchbar && (
+                    <View style={styles.centeredView}>
+                      <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={Searchbar}
+                        onRequestClose={() => {
+                          setSearchbar(!Searchbar);
+                        }}
+                      >
+                        <View style={styles.centeredView}>
+                          <View style={styles.modalView}>
+                            <GooglePlacesAutocomplete
+                              styles={{
+                                container: {
+                                  width: "100%",
+                                },
+                                textInputContainer: {
+                                  marginLeft: "5%",
+                                  width: "90%",
+                                },
+                                textInput: {
+                                  borderWidth: 1,
+                                  borderColor: "#666",
+                                  borderRadius: 10,
+                                  width: "100%",
+                                },
+                              }}
+                              GooglePlacesDetailsQuery={{ fields: "geometry" }}
+                              fetchDetails={true}
+                              placeholder="Search"
+                              onPress={(data, details = null) => {
+                                if (
+                                  details &&
+                                  details.geometry &&
+                                  details.geometry.location
+                                ) {
+                                  getWeatherDetails(
+                                    details.geometry.location.lat,
+                                    details.geometry.location.lng
+                                  );
+                                  setSearchbar(!Searchbar);
+                                }
+                              }}
+                              query={{
+                                key: "AIzaSyC9Mif-Mxfm6nU2_79jiAkpxv7O8jPfLYQ",
+                                language: "en",
+                              }}
+                            />
+                            <Pressable
+                              style={styles.buttonClose}
+                              onPress={() => setSearchbar(!Searchbar)}
+                            >
+                              <Text style={styles.textStyle}>Back</Text>
+                            </Pressable>
+                          </View>
+                        </View>
+                      </Modal>
+                    </View>
+                  )}
                 </View>
               </View>
             </TouchableOpacity>
@@ -129,14 +250,20 @@ const Weather = ({ navigation }) => {
                 <Text style={styles.dateTxt}>Sun, 3 July</Text>
               </View>
               <View style={styles.tampMain}>
-                <Image
-                  style={styles.sunLogo}
-                  source={require("../assets/Sunlogo.png")}
-                />
+                {getWeatherImage(weather.weathercode, styles.imageCurrent)}
+
                 <View style={styles.tampratureMain}>
-                  <Text style={styles.tampTxt}>{Math.floor(weather.main.temp)}°</Text>
-                  <Text style={styles.celTxt}>C</Text>
-                  <Text style={styles.sunny}>{weather.weather[0].main}</Text>
+                  <View style={{ flex: 1, flexDirection: "row" }}>
+                    <Text style={styles.tampTxt}>
+                      {Math.floor(weather.temperature)}°
+                    </Text>
+                    <Text style={styles.celTxt}>C</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.sunny}>
+                      {getWeatherName(weather.weathercode)}
+                    </Text>
+                  </View>
                 </View>
               </View>
               <View style={styles.rainMain}>
@@ -145,21 +272,21 @@ const Weather = ({ navigation }) => {
                     style={styles.rainlogo}
                     source={require("../assets/windlogo.png")}
                   />
-                  <Text style={styles.rainTxt}>{weather.wind.speed }m/s</Text>
+                  <Text style={styles.rainTxt}>{weather.windspeed}m/s</Text>
                 </View>
                 <View style={styles.rain}>
                   <Image
                     style={styles.rainlogo}
                     source={require("../assets/rainlogo.png")}
                   />
-                  <Text style={styles.rainTxt}>{weather.main.humidity}%</Text>
+                  <Text style={styles.rainTxt}>0%</Text>
                 </View>
                 <View style={styles.rain}>
                   <Image
                     style={styles.rainlogo}
                     source={require("../assets/ranelogo2.png")}
                   />
-                  <Text style={styles.rainTxt}>{weather.clouds.all}%</Text>
+                  <Text style={styles.rainTxt}>2%</Text>
                 </View>
               </View>
             </View>
@@ -169,18 +296,16 @@ const Weather = ({ navigation }) => {
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
               >
-                {weatherdata.map((item, ind) => {
-                  return (
-                    <View key={ind} style={styles.TodayWeather}>
-                      <Text style={styles.timeTxt}>{item.time}</Text>
-                      <Image
-                        style={styles.TodayWeatherImg}
-                        source={require("../assets/weathersunpng.png")}
-                      />
-                      <Text style={styles.tampdata}>{item.tamp}</Text>
-                    </View>
-                  );
-                })}
+                {weatherdata &&
+                  weatherdata.map((item, ind) => {
+                    return (
+                      <View key={ind} style={styles.TodayWeather}>
+                        <Text style={styles.timeTxt}>{item.time}</Text>
+                        {getWeatherImage(item.weather, styles.TodayWeatherImg)}
+                        <Text style={styles.tempdata}>{item.temp}°C</Text>
+                      </View>
+                    );
+                  })}
               </ScrollView>
             </View>
           </ScrollView>
@@ -211,12 +336,12 @@ const styles = StyleSheet.create({
   },
   loading_container: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: "center",
   },
   loading_horizontal: {
     flexDirection: "row",
     justifyContent: "space-around",
-    padding: 10
+    padding: 10,
   },
   containerMain: {
     height: height - 150,
@@ -318,8 +443,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   tampratureMain: {
-    width: 100,
-    flexDirection: "row",
+    flexDirection: "column",
     flexWrap: "wrap",
     marginHorizontal: 10,
     right: 0,
@@ -374,8 +498,8 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#b4c9ff",
   },
-  tampdata: {
-    fontSize: 24,
+  tempdata: {
+    fontSize: 20,
     fontWeight: "500",
     color: "#b4c9ff",
   },
@@ -389,5 +513,55 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "500",
+  },
+
+  centeredView: {
+    flex: 1,
+    alignContent: "stretch",
+  },
+  modalView: {
+    marginTop: 60,
+    width: 100 + "%",
+    backgroundColor: "#fff",
+    height: 100 + "%",
+    paddingTop: 35,
+
+    flex: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 1,
+  },
+  imageCurrent: {
+    width: 75,
+    height: 75,
+    resizeMode: "contain",
+  },
+  TodayWeatherImg: {
+    width: 45,
+    height: 45,
+    resizeMode: "contain",
+  },
+  buttonClose: {
+    width: "90%",
+    marginLeft: "5%",
+    marginBottom: 20,
+    height: 50,
+    backgroundColor: "#fca237",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  textStyle: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 18,
+    textTransform: "uppercase",
+    letterSpacing: 2,
   },
 });

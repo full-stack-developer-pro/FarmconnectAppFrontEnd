@@ -39,6 +39,7 @@ export default function Appwraper() {
 
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Back' screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Weather" component={Weather} />
         <Stack.Screen name="Language" component={Language} />
         <Stack.Screen name="GetStarted" component={GetStarted} />
         <Stack.Screen name="SignupLogin" component={SignupLogin} />
@@ -54,7 +55,6 @@ export default function Appwraper() {
         <Stack.Screen name="Quastion" component={Quastion} />
         <Stack.Screen name="Agronomist" component={Agronomist} />
         <Stack.Screen name="Myquastion" component={Myquastion} />
-        <Stack.Screen name="Weather" component={Weather} />
         <Stack.Screen name="Market" component={Market} />
         <Stack.Screen name="FarmRecord" component={FarmRecord} />
         <Stack.Screen name="Notification" component={Notification} />
