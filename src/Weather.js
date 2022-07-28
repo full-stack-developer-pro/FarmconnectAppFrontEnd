@@ -69,6 +69,7 @@ const Weather = ({ navigation }) => {
       console.log("location");
       try {
         let location = await Location.getCurrentPositionAsync();
+        console.log(location);
         setLocation(location);
         getWeatherDetails(location.coords.latitude, location.coords.longitude);
       } catch (error) {
@@ -83,6 +84,7 @@ const Weather = ({ navigation }) => {
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&units=metric&appid=9cb9f757b49145cc2d3b3a1d0cdbb4b9
       `
     );
+    console.log('asdfasdfasdf');
     const data = await response.json();
     setWeather(data);
     console.log(data);
